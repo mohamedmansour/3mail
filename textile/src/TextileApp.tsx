@@ -1,7 +1,7 @@
 //github.com/textileio/js-examples/blob/master/user-mailbox-setup/src/App.tsx
 
 import { Private, PrivateKey } from '@textile/crypto';
-import { KeyInfo } from '@textile/security';
+import { createUserAuth, KeyInfo, UserAuth } from '@textile/security';
 import Client from '@textile/threads-client';
 import ThreadID from '@textile/threads-id';
 import { MailboxEvent, UserMessage, Users } from '@textile/users';
@@ -43,17 +43,28 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
       key: process.env.TEXTILE_KEY as string,
       secret: process.env.TEXTILE_SECRET as string,
     };
-
     (async () => {
-      const client = await Client.withKeyInfo(keyInfo);
-      const token = await client.getToken(identity);
-      console.log(token);
-      setTextile(client);
+      // const client = await Client.withKeyInfo(keyInfo);
+      // const token = await client.getToken(identity);
+      // console.log(token);
+      // setTextile(client);
 
-      const users = await Users.withKeyInfo(keyInfo);
-      const uToken = await users.getToken(identity);
+      //https://textileio.github.io/js-textile/docs/hub.createuserauth
+      //const expiration = new Date(Date.now() + 120 * 1000);
+      // const userAuth: UserAuth = await createUserAuth(
+      //   keyInfo.key,
+      //   keyInfo.secret ?? '',
+      //   expiration,
+      // );
+
+      //const _users = await Users.withUserAuth(userAuth);
+      const _users = await Users.withKeyInfo({
+        key: keyInfo.key,
+      });
+
+      const uToken = await _users.getToken(identity);
       console.log('uToken', uToken);
-      setTextileUsers(users);
+      setTextileUsers(_users);
     })();
   }, []);
 
@@ -71,8 +82,9 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
 
   useEffect(() => {
     if (!textileUsers) return;
-    async () => {
+    (async () => {
       const mailboxId = await textileUsers.setupMailbox();
+      console.log(mailboxId);
       textileUsers.watchInbox(mailboxId, handleNewMessage);
 
       const messages = await textileUsers.listInboxMessages();
@@ -81,12 +93,13 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
         inbox.push(await messageDecoder(message));
       }
       setInbox(_inbox);
-    };
+    })();
   }, [textileUsers]);
 
   const sendMessageToSelf = async () => {
     const newMessage = 'hello world';
     const encoded = new TextEncoder().encode(newMessage);
+
     await textileUsers!.sendMessage(identity, identity.public, encoded);
   };
 
