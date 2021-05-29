@@ -1,10 +1,9 @@
 import { useCallback, useReducer } from 'react';
 import { loremIpsum } from 'lorem-ipsum';
-import { count } from 'console';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
 export type DraftStatus = 'unsaved' | 'saving' | 'failed' | 'saved';
-type MessageLoadingStatus = 'init' | 'loading' | 'loading failed';
+// type MessageLoadingStatus = 'init' | 'loading' | 'loading failed';
 type MessageSavingStatus = 'loaded' | 'saving' | 'saving failed' | 'saved';
 
 type UnauthenticatedState = { status: AuthStatus };

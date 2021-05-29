@@ -6,7 +6,6 @@ import AuthenticateScreen from '../pages/AuthenticateScreen';
 const Content = () => {
   const app = useApp();
   let screen;
-  console.log(app.state);
   switch (app.state.nav.type) {
     case 'mailbox':
       screen = (

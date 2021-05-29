@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/layout';
 import MailboxItem from 'components/molecules/MailboxItem';
-import { State, StoredMessage } from 'contexts/State';
+import { State } from 'contexts/State';
 
 type MailboxScreenProps = {
   state: State;
@@ -10,8 +10,9 @@ type MailboxScreenProps = {
 function MailboxScreen(props: MailboxScreenProps) {
   return (
     <Flex direction="column">
-      {props.state.messages.map((message) => (
+      {props.state.messages.map((message, idx) => (
         <MailboxItem
+          key={idx}
           message={message}
           onClick={() => props.openMessage(message.id)}
         />
