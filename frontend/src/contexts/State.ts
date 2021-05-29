@@ -1,4 +1,6 @@
 import { useCallback, useReducer } from 'react';
+import { loremIpsum } from 'lorem-ipsum';
+import { count } from 'console';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
 export type DraftStatus = 'unsaved' | 'saving' | 'failed' | 'saved';
@@ -20,6 +22,8 @@ type NavMailboxState = { type: 'mailbox' };
 
 export type StoredMessage = {
   id: string;
+  date: number;
+  sender: string;
   status: MessageSavingStatus;
   subject: string;
   content: string;
@@ -27,7 +31,7 @@ export type StoredMessage = {
 
 type Store = {
   draftStatus: DraftStatus;
-  messages: Array<StoredMessage>;
+  messages: StoredMessage[];
 };
 type DefaultState = {
   auth: AuthState;
@@ -40,8 +44,8 @@ type MessageState = {
 export type State = Store & (DefaultState | MessageState);
 
 type AuthAction = { type: 'auth'; status: AuthStatus };
-type AuthSuccessAction = { type: 'auth success' };
-type NavMailboxAction = { type: 'nav mailbox' };
+type AuthSuccessAction = { type: 'auth success'; messages: StoredMessage[] };
+type NavMailboxAction = { type: 'nav mailbox'; messages: StoredMessage[] };
 type NavMessageAction = { type: 'nav message'; docID: string };
 type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
 type Action =
@@ -50,6 +54,34 @@ type Action =
   | NavMailboxAction
   | NavMessageAction
   | MessageLoadedAction;
+
+const currentDateInMs = Date.now();
+const tempDb: StoredMessage[] = [
+  {
+    date: currentDateInMs,
+    status: 'loaded',
+    id: '0',
+    sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
+    subject: loremIpsum(),
+    content: loremIpsum({ count: 1, units: 'paragraphs' }),
+  },
+  {
+    date: currentDateInMs - 1000 * 60 * 60,
+    status: 'loaded',
+    id: '1',
+    sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
+    subject: loremIpsum(),
+    content: loremIpsum({ count: 2, units: 'paragraphs' }),
+  },
+  {
+    date: currentDateInMs - 1000 * 60 * 60 * 48,
+    status: 'loaded',
+    id: '2',
+    sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
+    subject: loremIpsum(),
+    content: loremIpsum({ count: 3, units: 'paragraphs' }),
+  },
+];
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -68,26 +100,7 @@ function reducer(state: State, action: Action): State {
         auth,
         draftStatus: 'unsaved',
         nav: { type: 'mailbox' },
-        messages: [
-          {
-            status: 'loaded',
-            id: '1',
-            subject: 'Message 1',
-            content: 'Content 1',
-          },
-          {
-            status: 'loaded',
-            id: '1',
-            subject: 'Message 2',
-            content: 'Content 2',
-          },
-          {
-            status: 'loaded',
-            id: '1',
-            subject: 'Message 3',
-            content: 'Content 3',
-          },
-        ],
+        messages: action.messages,
       };
     }
     case 'nav message':
@@ -125,12 +138,12 @@ export function useApp() {
     dispatch({ type: 'auth', status: 'loading' });
     // Imitate loading
     setTimeout(() => {
-      dispatch({ type: 'auth success' });
-    }, 1000);
+      dispatch({ type: 'auth success', messages: tempDb });
+    }, 500);
   }, []);
 
   const openMailbox = useCallback(() => {
-    dispatch({ type: 'nav mailbox' });
+    dispatch({ type: 'nav mailbox', messages: tempDb });
   }, []);
 
   const openMessage = useCallback((docID: string) => {
@@ -139,14 +152,9 @@ export function useApp() {
     setTimeout(() => {
       dispatch({
         type: 'message loaded',
-        message: {
-          id: docID,
-          status: 'loaded',
-          subject: 'Message X',
-          content: 'Content X',
-        },
+        message: tempDb[parseInt(docID)],
       });
-    }, 1000);
+    }, 500);
   }, []);
 
   return {

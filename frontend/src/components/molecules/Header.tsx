@@ -1,4 +1,5 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { CgMail } from 'react-icons/cg';
 
 const Header = () => {
   return (
@@ -12,11 +13,11 @@ const Header = () => {
     >
       <Flex>
         <Heading as="h1" size="lg" mr={4}>
-          C
+          <CgMail />
         </Heading>
 
-        <Box display={["none", "flex"]} alignItems="center">
-          Menu
+        <Box display={['none', 'flex']} alignItems="center">
+          cemail
         </Box>
       </Flex>
       <Box>
