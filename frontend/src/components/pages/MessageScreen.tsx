@@ -1,8 +1,23 @@
-import { Button, Heading } from '@chakra-ui/react';
-import { Flex, Text } from '@chakra-ui/layout';
+import {
+  Button,
+  Heading,
+  Box,
+  Flex,
+  Text,
+  Textarea,
+  Spacer,
+} from '@chakra-ui/react';
 import { NavMessageState, State } from 'contexts/State';
 
-import { CgChevronLeft, CgTime, CgUser } from 'react-icons/cg';
+import {
+  CgChevronLeft,
+  CgTime,
+  CgUser,
+  CgMailReply,
+  CgMailForward,
+  CgTrash,
+} from 'react-icons/cg';
+import { createRef, useEffect, useState } from 'react';
 
 type MessageScreenProps = {
   closeMessage: () => void;
@@ -10,7 +25,28 @@ type MessageScreenProps = {
 };
 
 function MessageScreen(props: MessageScreenProps) {
+  const [replyVisibility, setReplyVisibility] = useState<boolean>();
+  const [replyValue, setReplyValue] = useState('');
+  const replyRef = createRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (replyVisibility) {
+      replyRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [replyVisibility]);
+
+  const handleReplyInputChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setReplyValue(e.target.value);
+  };
+
+  const submitReply = () => {
+    setReplyVisibility(false);
+  };
+
   const nav = props.state.nav as NavMessageState;
+
   return (
     <Flex direction="row" padding={4}>
       <Button onClick={props.closeMessage} flexShrink={0}>
@@ -35,6 +71,44 @@ function MessageScreen(props: MessageScreenProps) {
               {nav.message.content}
             </Text>
           </>
+        )}
+
+        {!replyVisibility && (
+          <Box marginTop={10}>
+            <Button marginRight={4} onClick={() => setReplyVisibility(true)}>
+              <CgMailReply size={24} /> Reply
+            </Button>
+            <Button>
+              <CgMailForward size={24} /> Forward
+            </Button>
+          </Box>
+        )}
+
+        {replyVisibility && (
+          <Box
+            marginTop={10}
+            ref={replyRef}
+            boxShadow="md"
+            padding={4}
+            border="1px solid #eee"
+          >
+            <Textarea
+              autoFocus
+              value={replyValue}
+              onChange={handleReplyInputChange}
+              resize="vertical"
+              size="lg"
+            />
+            <Flex>
+              <Button colorScheme="blue" onClick={() => submitReply()}>
+                Send
+              </Button>
+              <Spacer />
+              <Button onClick={() => setReplyVisibility(false)}>
+                <CgTrash size={24} />
+              </Button>
+            </Flex>
+          </Box>
         )}
       </Flex>
     </Flex>
