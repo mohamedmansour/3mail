@@ -89,10 +89,17 @@ function MessageScreen(props: MessageScreenProps) {
             marginTop={10}
             ref={replyRef}
             boxShadow="md"
-            padding={4}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={2}
             border="1px solid #eee"
           >
+            <Flex alignItems="center" color="gray">
+              <CgMailReply size={20} /> {nav.message?.sender}
+            </Flex>
             <Textarea
+              border={0}
               autoFocus
               value={replyValue}
               onChange={handleReplyInputChange}
