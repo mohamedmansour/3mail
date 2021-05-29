@@ -14,6 +14,7 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
   const [textileUsers, setTextileUsers] = useState<Users>();
   const [threadId, setThreadId] = useState<ThreadID>();
   const [inbox, setInbox] = useState<DecryptedInbox[]>([]);
+  const [mailboxId, setMailboxId] = useState<string>();
 
   /**
    * Decrypts a user's inbox messages using their PrivateKey
@@ -32,8 +33,14 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
    * Handles a new inbox listen event
    */
   const handleNewMessage = async (reply?: MailboxEvent, err?: Error) => {
-    if (err) return;
-    if (!reply || !reply.message) return;
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    if (!reply || !reply.message) {
+      console.log('no reply ...');
+    }
     const message = await messageDecoder(reply.message);
     setInbox([...inbox, message]);
   };
@@ -82,10 +89,13 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
 
   useEffect(() => {
     if (!textileUsers) return;
+    let close: Function;
     (async () => {
       const mailboxId = await textileUsers.setupMailbox();
-      console.log(mailboxId);
-      textileUsers.watchInbox(mailboxId, handleNewMessage);
+      console.log('mailboxId', mailboxId);
+      setMailboxId(mailboxId);
+
+      close = textileUsers.watchInbox(mailboxId, handleNewMessage);
 
       const messages = await textileUsers.listInboxMessages();
       const _inbox: DecryptedInbox[] = [];
@@ -94,10 +104,14 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
       }
       setInbox(_inbox);
     })();
+    return () => {
+      if (close) close();
+    };
   }, [textileUsers]);
 
+  let q = 1;
   const sendMessageToSelf = async () => {
-    const newMessage = 'hello world';
+    const newMessage = `hello world ${q++}`;
     const encoded = new TextEncoder().encode(newMessage);
 
     await textileUsers!.sendMessage(identity, identity.public, encoded);
@@ -105,8 +119,12 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
 
   return (
     <div>
-      {identity.pubKey.toString()}{' '}
-      <button onClick={sendMessageToSelf}>send message to yourself</button> <h1>Inbox</h1>
+      {mailboxId ? (
+        <button onClick={sendMessageToSelf}>send message to yourself</button>
+      ) : (
+        <div>Standby, were waiting for the mailbox to arrive</div>
+      )}
+      <h1>Inbox: </h1>
       <ul>
         {inbox.map((msg, i) => (
           <li key={`msg-${i}`}>

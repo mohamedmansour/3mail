@@ -12,19 +12,19 @@ const App = (props) => {
     //const _identity = await PrivateKey.fromRandom();
 
     const _identity = await generatePrivateKey();
-    console.log(_identity);
+    //console.log(_identity);
     setIdentity(_identity);
   }
 
   async function sign() {
     const challenge = Buffer.from('Sign this string');
     const signed = identity.sign(challenge);
-    console.log(signed);
+    //console.log(signed);
   }
 
   return (
     <div>
-      test <button onClick={createNewIdentity}>login</button>
+      {!identity && <button onClick={createNewIdentity}>login</button>}
       {identity && <TextileApp identity={identity} />}
     </div>
   );
