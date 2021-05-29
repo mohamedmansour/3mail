@@ -8,8 +8,6 @@ import { DID } from "dids";
 import { TileDocument } from '@ceramicnetwork/stream-tile'
 
 import { definitions } from "../config.json";
-const CERAMIC_URL = "http://localhost:7007";
-
 
 export type MessageItem = {
   id: string,
@@ -26,7 +24,7 @@ export type IDXInit = MessageList & {
 
 export async function getIDX(seed: Uint8Array): Promise<IDXInit> {
   // Create the Ceramic instance and inject provider
-  const ceramic = new Ceramic(CERAMIC_URL)
+  const ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string)
 
   const resolverRegistry: ResolverRegistry = {
     ...KeyDidResolver.getResolver(),
