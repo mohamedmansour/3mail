@@ -8,7 +8,8 @@
 - Install previious gyp: `npm install -g node-pre-gyp`
 
 
-## Project build
+## Frontend project build
 
+- Enter `cd frontend`
 - Install dependencies: `yarn install`
 - Run Ceramic: `yarn ceramic`
