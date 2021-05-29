@@ -25,7 +25,7 @@ const IPFSProvider = ({ children }: {
         config: {
           Discovery: {
             MDNS: {
-              Enabled: false,
+              Enabled: true,
             },
             webRTCStar: {
               Enabled: true,

@@ -25,17 +25,15 @@ const OrbitDbProvider = ({ dbName, children }: {
     if (!ipfs) return;
     (async () => {
       const orbitDb = await OrbitDB.createInstance(ipfs);
-      console.log("Identity", orbitDb.identity.toJSON());
+      console.log("ODB Identity", orbitDb.identity.toJSON());
       setOdb(orbitDb);
     })();
   }, [ipfs]);
 
   useEffect(() => {
-    if (!odb || !ipfs) return;
+    if (!odb) return;
     
     (async() => {
-      const odb = await OrbitDB.createInstance(ipfs);
-    
       //https://github.com/orbitdb/orbit-db/blob/main/API.md#orbitdblognameaddress
       const db = await odb.eventlog(dbName, {
         accessController: {

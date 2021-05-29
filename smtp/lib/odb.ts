@@ -16,7 +16,7 @@ const makeIpfs = async (repo: string = ".ipfs"): Promise<IPFS> => {
     config: {
       Discovery: {
         MDNS: {
-          Enabled: false,
+          Enabled: true,
         },
         webRTCStar: {
           Enabled: true,
@@ -26,6 +26,7 @@ const makeIpfs = async (repo: string = ".ipfs"): Promise<IPFS> => {
   })
   _ipfsNode = ipfsNode;
   const ipfsId = await ipfsNode.id();
+  await ipfsNode.swarm.connect("/dns4/ipfs.depa.digital/tcp/4002/wss/p2p/QmXAghnP7DqmAEE7Zx4SxMo3UcUVSn8f1xDCT6x1ysYMSj");
   console.log('ipfs node (v%s) is running [id: %s]', ipfsId.agentVersion, ipfsId.id);
   return ipfsNode;
 }
