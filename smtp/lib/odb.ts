@@ -1,4 +1,7 @@
 import {IPFS, create as createIPFS} from "ipfs-core";
+//@ts-ignore
+import { create as createHttpClient } from 'ipfs-http-client'
+
 import OrbitDB from 'orbit-db';
 
 let _ipfsNode: IPFS;
@@ -6,13 +9,14 @@ let _ipfsNode: IPFS;
 //an odb eventlog instance
 let _db: any;
 
-const makeIpfs = async (repo: string = ".ipfs"): Promise<IPFS> => {
+const makeIpfs = async (offset: number = 1): Promise<IPFS> => {
   if (_ipfsNode) return _ipfsNode;
   const ipfsNode = await createIPFS ({
-    repo,
+    repo: `.ipfs${offset}`,
     relay: {
       enabled: true, hop: { enabled: true, active: true }
     },
+
     config: {
       Discovery: {
         MDNS: {
@@ -21,7 +25,13 @@ const makeIpfs = async (repo: string = ".ipfs"): Promise<IPFS> => {
         webRTCStar: {
           Enabled: true,
         },
-      }
+      },
+      Addresses: {
+        Swarm: [
+          `/ip4/0.0.0.0/tcp/${4000 + offset}`,
+          `/ip4/127.0.0.1/tcp/${4001 + offset}/ws`
+        ]
+      },
     }
   })
   _ipfsNode = ipfsNode;
