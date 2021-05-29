@@ -1,21 +1,19 @@
 {
-	"extensions": {
-		"recommendations": [
-			"esbenp.prettier-vscode"
-		]
-	},
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"[javascript]": {
-			"editor.defaultFormatter": "esbenp.prettier-vscode"
-		},
-		"[typescript]": {
-			"editor.defaultFormatter": "esbenp.prettier-vscode"
-		}
-	}
+  "extensions": {
+    "recommendations": ["esbenp.prettier-vscode"]
+  },
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  }
 }
