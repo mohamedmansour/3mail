@@ -8,12 +8,17 @@
     }
   ],
   "settings": {
+    "prettier.enable": true,
+    "prettier.singleQuote": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
     "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
     },
     "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
   }
 }

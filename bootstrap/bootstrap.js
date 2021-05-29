@@ -111,7 +111,7 @@ async function run() {
       MessageList: messageListSchema.commitId.toUrl(),
     },
   }
-  await writeFile('./config.json', JSON.stringify(config))
+  await writeFile('../frontend/src/config.json', JSON.stringify(config))
 
   console.log('Config written to src/config.json file:', config)
   process.exit(0)
