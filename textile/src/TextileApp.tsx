@@ -5,7 +5,7 @@ import { createUserAuth, KeyInfo, UserAuth } from '@textile/security';
 import Client from '@textile/threads-client';
 import ThreadID from '@textile/threads-id';
 import { MailboxEvent, UserMessage, Users } from '@textile/users';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { DecryptedInbox } from './types';
 
@@ -15,6 +15,8 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
   const [threadId, setThreadId] = useState<ThreadID>();
   const [inbox, setInbox] = useState<DecryptedInbox[]>([]);
   const [mailboxId, setMailboxId] = useState<string>();
+
+  const [curMsgIdx, setCurMsgIdx] = useState<number>(1);
 
   /**
    * Decrypts a user's inbox messages using their PrivateKey
@@ -37,12 +39,12 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
       console.error(err);
       return;
     }
-
     if (!reply || !reply.message) {
       console.log('no reply ...');
     }
+
     const message = await messageDecoder(reply.message);
-    setInbox([...inbox, message]);
+    setInbox((old) => [...old, message]);
   };
 
   useEffect(() => {
@@ -89,7 +91,7 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
 
   useEffect(() => {
     if (!textileUsers) return;
-    let close: Function;
+    let close: { close: () => void };
     (async () => {
       const mailboxId = await textileUsers.setupMailbox();
       console.log('mailboxId', mailboxId);
@@ -105,22 +107,25 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
       setInbox(_inbox);
     })();
     return () => {
-      if (close) close();
+      if (close) close.close();
     };
   }, [textileUsers]);
 
-  let q = 1;
   const sendMessageToSelf = async () => {
-    const newMessage = `hello world ${q++}`;
+    const newMessage = `hello world ${curMsgIdx}`;
     const encoded = new TextEncoder().encode(newMessage);
-
-    await textileUsers!.sendMessage(identity, identity.public, encoded);
+    setCurMsgIdx((old) => old + 1);
+    await textileUsers.sendMessage(identity, identity.public, encoded);
   };
 
   return (
     <div>
       {mailboxId ? (
-        <button onClick={sendMessageToSelf}>send message to yourself</button>
+        <>
+          mailbox id: {mailboxId}
+          <br />
+          <button onClick={sendMessageToSelf}>send message to yourself</button>
+        </>
       ) : (
         <div>Standby, were waiting for the mailbox to arrive</div>
       )}
@@ -128,7 +133,7 @@ const TextileApp = ({ identity }: { identity: PrivateKey }) => {
       <ul>
         {inbox.map((msg, i) => (
           <li key={`msg-${i}`}>
-            {msg.from} {msg.body}{' '}
+            id: {msg.id} <br /> from: {msg.from} <br /> body: {msg.body}{' '}
           </li>
         ))}
       </ul>
