@@ -1,3 +1,4 @@
+require('dotenv-flow').config();
 const { writeFile } = require('fs').promises
 const Ceramic = require('@ceramicnetwork/http-client').default
 const { createDefinition, publishSchema } = require('@ceramicstudio/idx-tools')
@@ -7,8 +8,6 @@ const KeyDidResolver = require('key-did-resolver').default
 const { Resolver } = require('did-resolver')
 const { DID } = require('dids')
 const fromString = require('uint8arrays/from-string')
-
-const CERAMIC_URL = 'http://localhost:7007'
 
 const MessageSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -75,18 +74,18 @@ const MessageListSchema = {
 async function run() {
   // The seed must be provided as an environment variable
   const seed = fromString(process.env.SEED, 'base16')
+
   // Connect to the local Ceramic node
-  const ceramic = new Ceramic(CERAMIC_URL)
+  const ceramic = new Ceramic(process.env.CERAMIC_URL)
   // Provide the DID Resolver and Provider to Ceramic
   const resolver = new Resolver({
-      ...KeyDidResolver.getResolver(),
-      ...ThreeIdResolver.getResolver(ceramic) })
+    ...KeyDidResolver.getResolver(),
+    ...ThreeIdResolver.getResolver(ceramic)
+  })
   const provider = new Ed25519Provider(seed)
   const did = new DID({ provider, resolver })
   await ceramic.setDID(did)
-  // Authenticate the Ceramic instance with the provider
   await ceramic.did.authenticate()
-    
 
   // Publish the two schemas
   const [messageSchema, messageListSchema] = await Promise.all([
@@ -111,9 +110,9 @@ async function run() {
       MessageList: messageListSchema.commitId.toUrl(),
     },
   }
-  await writeFile('../frontend/src/config.json', JSON.stringify(config))
+  await writeFile('./config.json', JSON.stringify(config))
 
-  console.log('Config written to src/config.json file:', config)
+  console.log('Config written to ./config.json file', config)
   process.exit(0)
 }
 

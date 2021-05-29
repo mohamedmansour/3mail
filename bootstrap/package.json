@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "main": "bootstrap.js",
   "scripts": {
+    "seed": "node ./seed.js > .env.local",
     "bootstrap": "node ./bootstrap.js"
   },
   "dependencies": {
     "@ceramicnetwork/cli": "^1.0.3",
     "@ceramicnetwork/http-client": "^1.0.3",
     "@ceramicstudio/idx-tools": "^0.10.0",
+    "dotenv-flow": "^3.2.0",
     "key-did-provider-ed25519": "^1.1.0",
     "uint8arrays": "^2.1.5"
   },

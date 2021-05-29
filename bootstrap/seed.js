@@ -1,0 +1,1 @@
+console.log("SEED=" + require('crypto').randomBytes(32).toString('hex'));
