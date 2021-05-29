@@ -1,0 +1,11 @@
+{
+  "name": "w3c-cemail",
+  "version": "1.0.0",
+  "description": "Decentralized, censorship-resistant network for managing mutable information without any databases or servers!",
+  "scripts": {
+    "ceramic": "ceramic daemon",
+    "bootstrap": "cd bootstrap && yarn bootstrap",
+    "start": "cd frontend && yarn start"
+  },
+  "license": "ISC"
+}
