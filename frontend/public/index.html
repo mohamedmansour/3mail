@@ -21,15 +21,49 @@
         right: 0;
         bottom: 0;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         font-family: sans-serif;
+      }
+      #raw-text {
+        visibility: hidden;
+        margin-top: 0.5rem;
+        height: 24px;
       }
     </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"><div id="raw-loader">loading...</div></div>
+    <div id="root">
+      <div id="raw-loader">
+        <svg
+          width="128px"
+          height="128px"
+          viewBox="0 0 512 512"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M385.223 261.055L149.759 246.474L110.18 244.005L23 363.203L128.774 341.215L187.794 329.025L485.211 267.305L385.223 261.055Z"
+            fill="#8E54A2"
+          />
+          <path
+            d="M153.848 187.376L489.146 243.542L208.008 112L153.848 187.376Z"
+            fill="#8E54A2"
+          />
+          <path
+            d="M150.453 204.427L157.088 229.501L384.375 243.619L267.26 224.023L150.453 204.427Z"
+            fill="#8E54A2"
+          />
+          <path
+            d="M444.244 293.536L284.927 326.556L142.661 356.105L161.64 400.544L444.244 293.536Z"
+            fill="#8E54A2"
+          />
+        </svg>
+        <div id="raw-text">loading...</div>
+      </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

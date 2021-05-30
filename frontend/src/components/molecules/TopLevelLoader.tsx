@@ -1,4 +1,5 @@
-import { Center } from '@chakra-ui/react';
+import { Center, Text, VStack } from '@chakra-ui/react';
+import { LogoIcon } from 'components/branding/Logo';
 import React from 'react';
 
 interface TopLevelLoaderProps {
@@ -8,7 +9,10 @@ interface TopLevelLoaderProps {
 export function TopLevelLoader(props: TopLevelLoaderProps) {
   return (
     <Center h="100vh" color="black">
-      {props.children}
+      <VStack>
+        <LogoIcon fontSize="128px" color="#8E54A2" />
+        <Text>{props.children}</Text>
+      </VStack>
     </Center>
   );
 }
