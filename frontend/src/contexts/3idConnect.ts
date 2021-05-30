@@ -28,8 +28,16 @@ const authenticate = async () => {
 
   const jws = await did.createJWS({ hello: 'world' })
   console.log(jws)
+  // setCeramic(_ceramic);
+  // setDID(did);
+  
+  // // Create the IDX instance with the definitions aliases from the config
+  // setIDX( new IDX({ ceramic: _ceramic, aliases: definitions }))
 
-  window.idx = new IDX({ ceramic })
-  window.ceramic = ceramic
-  window.did = did.id
+  // // Load the existing notes
+  // const relayId = `relay-${did.id}`
+  // console.log('RelayID', relayId)
+  // window.idx = new IDX({ ceramic })
+  // window.ceramic = ceramic
+  // window.did = did.id
 }
