@@ -33,7 +33,7 @@ function MessageScreen(props: MessageScreenProps) {
     if (replyVisibility) {
       replyRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [replyVisibility]);
+  }, [replyRef, replyVisibility]);
 
   const handleReplyInputChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
