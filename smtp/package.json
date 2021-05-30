@@ -21,7 +21,8 @@
     "nodemailer": "^6.4.16",
     "orbit-db": "^0.26.1",
     "smtp-server": "^3.8.0",
-    "ts-node": "^10.0.0"
+    "ts-node": "^10.0.0",
+    "ethers": "^5.2.0"
   },
   "devDependencies": {
     "@types/nodemailer": "^6.4.2",
