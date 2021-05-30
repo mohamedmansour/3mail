@@ -8,7 +8,6 @@ import { Layout } from './Layout';
 
 const Content = () => {
   const app = useApp();
-  console.log(app.state.searchResults);
   switch (app.state.nav.type) {
     case 'mailbox':
       return (
