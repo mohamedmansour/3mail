@@ -24,6 +24,7 @@ import { AuthState } from 'contexts/State';
 import { CgLock } from 'react-icons/cg';
 import { LogoIcon } from 'components/branding/Logo';
 import Welcome from 'components/branding/Welcome';
+import { ConnectWallet } from 'components/molecules/ConnectWallet';
 
 type AuthenticateProps = {
   authenticate: (seed: Uint8Array) => void;
@@ -31,7 +32,8 @@ type AuthenticateProps = {
 };
 
 function AuthenticateScreen(props: AuthenticateProps) {
-  const [nav, setNav] = useState<'default' | 'login' | 'create'>('default');
+  const [nav, setNav] =
+    useState<'default' | 'login' | 'create' | 'connect'>('default');
   const [seed, setSeed] = useState<string>();
   const [error, setError] = useState<string>();
   const { authenticate, state } = props;
@@ -86,6 +88,13 @@ function AuthenticateScreen(props: AuthenticateProps) {
         <Spacer />
         <Button
           disabled={seed === '' || isLoading}
+          onClick={() => setNav('connect')}
+          variant="contained"
+        >
+          Connect
+        </Button>
+        <Button
+          disabled={seed === '' || isLoading}
           onClick={() => setNav('login')}
           variant="contained"
         >
@@ -105,11 +114,10 @@ function AuthenticateScreen(props: AuthenticateProps) {
         textAlign="center"
         justifyContent="center"
       >
-        {nav === 'default' && (
-          <Welcome />
-        )}
+        {nav === 'default' && <Welcome />}
+        {nav === 'connect' && <ConnectWallet />}
         {nav === 'login' && (
-          <VStack align="flex-start" gridGap={4}>
+          <VStack align="flex-start" gridGap={4} minW={500}>
             <Heading size="md">
               <Flex align="center">
                 <CgLock />
@@ -152,7 +160,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
           </VStack>
         )}
         {nav === 'create' && (
-          <VStack align="flex-start" gridGap={4}>
+          <VStack align="flex-start" gridGap={4} minW={500}>
             <Heading size="md">
               <Flex align="center">
                 <CgLock />
