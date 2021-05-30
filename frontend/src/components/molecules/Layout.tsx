@@ -53,14 +53,10 @@ export function Layout(props: LayoutProps) {
           color="white"
           boxShadow="md"
         >
-          <Flex onClick={props.home} cursor="pointer">
-            <Heading as="h1" size="lg" mr={4}>
-              <LogoIcon />
-            </Heading>
-            <Box display={['none', 'flex']} alignItems="center">
-              cemail
-            </Box>
-          </Flex>
+          <HStack onClick={props.home} cursor="pointer" align="center">
+            <LogoIcon fontSize={24} />
+            <Text>cemail</Text>
+          </HStack>
           <HStack
             w="50%"
             rounded="lg"
