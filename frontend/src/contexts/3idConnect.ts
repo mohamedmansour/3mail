@@ -6,7 +6,7 @@ import { DID } from 'dids'
 
 import { web3Modal } from './providers'
 
-const CERAMIC_URL = process.env.CERAMIC_API || 'http://localhost:7007'
+const CERAMIC_URL = process.env.REACT_APP_CERAMIC_URL as string
 
 const threeIdConnect = new ThreeIdConnect()
 
@@ -33,5 +33,3 @@ const authenticate = async () => {
   window.ceramic = ceramic
   window.did = did.id
 }
-
-document.getElementById('bauth').addEventListener('click', authenticate)
