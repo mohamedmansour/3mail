@@ -1,14 +1,14 @@
 import { ComposeScreen } from 'components/pages/ComposeScreen';
 import MailboxScreen from 'components/pages/MailboxScreen';
 import MessageScreen from 'components/pages/MessageScreen';
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../contexts/State';
 import AuthenticateScreen from '../pages/AuthenticateScreen';
 import { Layout } from './Layout';
 
 const Content = () => {
   const app = useApp();
-  console.log(app.state.nav.type);
+
   switch (app.state.nav.type) {
     case 'mailbox':
       return (
