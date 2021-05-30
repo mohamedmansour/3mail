@@ -192,13 +192,15 @@ export function useApp() {
   const openMessage = useCallback((docID: string) => {
     dispatch({ type: 'nav message', docID });
     // Here do the fetching
+    const msg = state.messages.find(m => m.id === docID);
+    
     setTimeout(() => {
       dispatch({
         type: 'message loaded',
-        message: tempDb[parseInt(docID)],
+        message: msg!,
       });
     }, 500);
-  }, []);
+  }, [state.messages]);
 
   const logout = useCallback(() => {
     dispatch({ type: 'auth logout' });

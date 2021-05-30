@@ -41,11 +41,14 @@ const OrbitDbTest = ({addMessage}:
     // console.log(doc);
     // console.log(doc.content);
 
+    console.log(doc);
+    const controller = doc.controllers[0];
+
     const latestMessage: StoredMessage = {
-      id: "none",
+      id: doc.id.toString(),
       date: (new Date(content.date)).getTime(),
       content: content.message,
-      sender: "some DID",
+      sender: controller,
       subject: content.subject,
       status: 'loaded'
     }
@@ -75,7 +78,7 @@ const OrbitDbTest = ({addMessage}:
 
   return (
     <Box position="fixed" bottom="0">
-      ODB
+      
     </Box>
   );
 };

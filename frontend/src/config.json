@@ -1,0 +1,9 @@
+{
+  "definitions": {
+    "messages": "kjzl6cwe1jw148pa1sc5mwhk9f6bthfwhgfbwm021v3x7xj8rwe2efyfiay4qk7"
+  },
+  "schemas": {
+    "Message": "ceramic://k3y52l7qbv1fry43o9tqwkz0uy2h2hfa7j4dypk32imnk5iuo5tjshu3tnanx4ruo",
+    "MessageList": "ceramic://k3y52l7qbv1frxx7czwi8ji2h1zlw7n7hhheq6raon95yp0cxu9o0dr6wblq2i8zk"
+  }
+}
