@@ -1,5 +1,6 @@
 import { useCallback, useReducer } from 'react';
 import { loremIpsum } from 'lorem-ipsum';
+import { useCeramic } from './Ceramic';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
 export type DraftStatus = 'unsaved' | 'saving' | 'failed' | 'saved';
@@ -164,13 +165,16 @@ export function useApp() {
     messages: [],
   });
 
+  const {setSeed: updateSeed} = useCeramic();
+
   const authenticate = useCallback((seed: Uint8Array) => {
     dispatch({ type: 'auth', status: 'loading' });
     // Imitate loading
+    updateSeed(seed);
     setTimeout(() => {
       dispatch({ type: 'auth success', messages: tempDb });
     }, 500);
-  }, []);
+  }, [updateSeed]);
 
   const openMailbox = useCallback(() => {
     dispatch({ type: 'nav mailbox', messages: tempDb });
