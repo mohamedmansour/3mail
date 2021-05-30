@@ -1,13 +1,8 @@
 import {SMTPServer, SMTPServerAddress, SMTPServerAuthentication, SMTPServerAuthenticationResponse, SMTPServerDataStream, SMTPServerSession} from 'smtp-server';
 import { ethers } from "ethers";
+import {simpleParser} from 'mailparser';
 
 const provider = new ethers.providers.JsonRpcProvider("https://ropsten.infura.io/v3/531a59e4c31d4a34a713a6bb4c7caa52");
-
-const aMsg = {
-  From: "",
-  To: "",
-  Data: ""
-};
 
 type ErrorCallback = (err?: Error | undefined) => void
 type AuthResponseCallback = (
@@ -21,40 +16,38 @@ const onConnect = (session: SMTPServerSession, callback:ErrorCallback) => {
 
 const onMailFrom = (address: SMTPServerAddress, session: SMTPServerSession, callback: ErrorCallback) => {
 
-  console.log("from:  "+ session, address);
-  aMsg["From"] = address.address.toString(); 
+  console.debug("from:  "+ session, address);
+  //could resolve the senders address, but don't have to. It's configured on our side.
+  //aMsg["From"] = address.address.toString(); 
   callback();
 }
 
 const onRcptTo = (address: SMTPServerAddress, session: SMTPServerSession, callback: ErrorCallback) => {
 
-  console.log("to: "+ session, address);
-  aMsg["To"] = address.address.toString(); 
+  console.debug("to: "+ session, address);
+  //aMsg["To"] = address.address.toString(); 
   callback();
 }
 
-const onData = (stream: SMTPServerDataStream, session: SMTPServerSession, callback: ErrorCallback) => {
+const onData = async (stream: SMTPServerDataStream, session: SMTPServerSession, callback: ErrorCallback) => {
   
-  const chunks = [];
-  stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-  stream.on('end', () => aMsg.Data = Buffer.concat(chunks).toString('utf8'));
-
+  const parsed = await simpleParser(stream);
   //TODO send aMsg{} to OrbitalDB here
-  
-  stream.on("close", callback); 
-
+  console.log(parsed.text, parsed.subject, parsed.date);
+  callback();
 }
 
 const onAuth = async (auth: SMTPServerAuthentication, session: SMTPServerSession, callback: AuthResponseCallback) => {
  
   //example of how to resolve ENS
-  const resolver = await provider.getResolver("cemail.eth");
-  const email = resolver.getText("email");
+  const resolver = await provider.getResolver("elmariachi.eth");
+  const address = await resolver.getAddress();
+  const did = await resolver.getText("did");
+  const inbox = await resolver.getText("email");
 
-  email.then(function(result) {
-    //async
-    console.log(aMsg.To); 
- })
+  console.log("ens: ", address, did, inbox);
+  
+
   const resp: SMTPServerAuthenticationResponse = {
     user: "a user"
   }
