@@ -65,6 +65,10 @@ const OrbitDbTest = ({addMessage}:
       
       const latest = all[0];
       convertMessage(ceramic, latest);
+      
+      // all.forEach((msg:any) => {
+      //   convertMessage(ceramic, msg);
+      // })
     });
     //@ts-ignore
   }, [db, ceramic]);
