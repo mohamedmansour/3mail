@@ -9,7 +9,7 @@ type MailboxScreenProps = {
 
 function MailboxScreen(props: MailboxScreenProps) {
   return (
-    <VStack align="stretch" spacing={0}>
+    <VStack align="stretch" spacing={0} width="inherit">
       {props.state.messages.map((message, idx) => (
         <MailboxItem
           key={idx}

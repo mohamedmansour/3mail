@@ -2,7 +2,7 @@ import MailboxScreen from 'components/pages/MailboxScreen';
 import MessageScreen from 'components/pages/MessageScreen';
 import { useApp } from '../../contexts/State';
 import AuthenticateScreen from '../pages/AuthenticateScreen';
-import Header from 'components/molecules/Header';
+import { Layout } from './Layout';
 
 const Content = () => {
   const app = useApp();
@@ -10,18 +10,16 @@ const Content = () => {
   switch (app.state.nav.type) {
     case 'mailbox':
       screen = (
-        <>
-          <Header logout={app.logout} home={app.openMailbox} />
+        <Layout logout={app.logout} home={app.openMailbox}>
           <MailboxScreen state={app.state} openMessage={app.openMessage} />
-        </>
+        </Layout>
       );
       break;
     case 'message':
       screen = (
-        <>
-          <Header logout={app.logout} home={app.openMailbox} />
+        <Layout logout={app.logout} home={app.openMailbox}>
           <MessageScreen closeMessage={app.openMailbox} state={app.state} />
-        </>
+        </Layout>
       );
       break;
     default:

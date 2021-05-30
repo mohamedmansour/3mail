@@ -12,7 +12,6 @@ import { NavMessageState, State } from 'contexts/State';
 import {
   CgChevronLeft,
   CgTime,
-  CgUser,
   CgMailReply,
   CgMailForward,
   CgTrash,
@@ -49,7 +48,7 @@ function MessageScreen(props: MessageScreenProps) {
   const nav = props.state.nav as NavMessageState;
 
   return (
-    <Flex direction="row" padding={4}>
+    <Flex direction="row" padding={4} width="inherit">
       <Button onClick={props.closeMessage} flexShrink={0}>
         <CgChevronLeft />
       </Button>
