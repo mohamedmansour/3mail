@@ -1,19 +1,17 @@
 import { VStack } from '@chakra-ui/react';
 import MailboxItem from 'components/molecules/MailboxItem';
 import OrbitDbTest from 'components/organisms/OrbitDbTest';
-import { useOrbitDb } from 'contexts/OrbitDB';
 import { State, StoredMessage } from 'contexts/State';
-import { useEffect } from 'react';
 
 type MailboxScreenProps = {
   state: State;
   openMessage: (id: string) => void;
-  addMessage: (msg: StoredMessage) => void
+  addMessage: (msg: StoredMessage) => void;
 };
 
 function MailboxScreen(props: MailboxScreenProps) {
-  const {state, addMessage} = props;
-  
+  const { addMessage } = props;
+
   // const { odb, db, setDbName } = useOrbitDb();
 
   // useEffect(() => {
@@ -50,7 +48,7 @@ function MailboxScreen(props: MailboxScreenProps) {
           onClick={() => props.openMessage(message.id)}
         />
       ))}
-      <OrbitDbTest addMessage={addMessage}/>
+      <OrbitDbTest addMessage={addMessage} />
     </VStack>
   );
 }

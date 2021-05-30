@@ -1,5 +1,4 @@
 import { useCallback, useReducer } from 'react';
-import { loremIpsum } from 'lorem-ipsum';
 import { useCeramic } from './Ceramic';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
@@ -54,7 +53,7 @@ type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
 type SearchLoadingAction = { type: 'search loading' };
 type SearchLoadedAction = { type: 'search loaded'; results: StoredMessage[] };
 type SearchClearedAction = { type: 'search cleared' };
-type AddMessageAction = { type: 'message added';message: StoredMessage }
+type AddMessageAction = { type: 'message added'; message: StoredMessage };
 type Action =
   | AuthAction
   | AuthLogoutAction
@@ -68,7 +67,6 @@ type Action =
   | SearchClearedAction
   | AddMessageAction;
 
-const currentDateInMs = Date.now();
 const tempDb: StoredMessage[] = [];
 
 // for (let mockIndex = 0; mockIndex < 100; mockIndex++) {
@@ -158,7 +156,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         messages: [action.message, ...state.messages],
-      }
+      };
     }
   }
 
@@ -173,16 +171,19 @@ export function useApp() {
     messages: [],
   });
 
-  const {setSeed: updateSeed, idx} = useCeramic();
+  const { setSeed: updateSeed } = useCeramic();
 
-  const authenticate = useCallback((seed: Uint8Array) => {
-    dispatch({ type: 'auth', status: 'loading' });
-    // Imitate loading
-    updateSeed(seed);
-    setTimeout(() => {
-      dispatch({ type: 'auth success', messages: tempDb });
-    }, 500);
-  }, [updateSeed]);
+  const authenticateWithSeed = useCallback(
+    (seed: Uint8Array) => {
+      dispatch({ type: 'auth', status: 'loading' });
+      // Imitate loading
+      updateSeed(seed);
+      setTimeout(() => {
+        dispatch({ type: 'auth success', messages: tempDb });
+      }, 500);
+    },
+    [updateSeed]
+  );
 
   const openMailbox = useCallback(() => {
     dispatch({ type: 'nav mailbox', messages: tempDb });
@@ -235,13 +236,12 @@ export function useApp() {
     dispatch({ type: 'search cleared' });
   }, []);
 
-
   const addMessage = useCallback((message: StoredMessage) => {
-    dispatch({ type: 'message added' , message});
+    dispatch({ type: 'message added', message });
   }, []);
 
   return {
-    authenticate,
+    authenticateWithSeed,
     openMessage,
     openMailbox,
     openCompose,

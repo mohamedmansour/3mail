@@ -20,7 +20,11 @@ const Content = () => {
           searchResults={app.state.searchResults}
           openMessage={app.openMessage}
         >
-          <MailboxScreen state={app.state} openMessage={app.openMessage} addMessage={app.addMessage} />
+          <MailboxScreen
+            state={app.state}
+            openMessage={app.openMessage}
+            addMessage={app.addMessage}
+          />
         </Layout>
       );
     case 'message':
@@ -54,7 +58,8 @@ const Content = () => {
     default:
       return (
         <AuthenticateScreen
-          authenticate={app.authenticate}
+          authenticateWithSeed={app.authenticateWithSeed}
+          authenticateWithAddress={app.openMailbox}
           state={app.state.auth}
         />
       );

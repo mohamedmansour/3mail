@@ -25,7 +25,8 @@ import Welcome from 'components/branding/Welcome';
 import { ConnectWallet } from 'components/molecules/ConnectWallet';
 
 type AuthenticateProps = {
-  authenticate: (seed: Uint8Array) => void;
+  authenticateWithSeed: (seed: Uint8Array) => void;
+  authenticateWithAddress: () => void;
   state: AuthState;
 };
 
@@ -34,7 +35,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
     useState<'default' | 'login' | 'create' | 'connect'>('default');
   const [seed, setSeed] = useState<string>();
   const [error, setError] = useState<string>();
-  const { authenticate, state } = props;
+  const { authenticateWithSeed, authenticateWithAddress, state } = props;
   const isLoading = state.status === 'loading';
 
   if (state.status === 'done') {
@@ -62,7 +63,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
   const handleLogin = () => {
     if (seed) {
       try {
-        authenticate(fromString(seed, 'base16'));
+        authenticateWithSeed(fromString(seed, 'base16'));
       } catch (e) {
         setError('Seed should be base16-encoded string of 32 bytes length.');
       }
@@ -113,7 +114,9 @@ function AuthenticateScreen(props: AuthenticateProps) {
         justifyContent="center"
       >
         {nav === 'default' && <Welcome />}
-        {nav === 'connect' && <ConnectWallet />}
+        {nav === 'connect' && (
+          <ConnectWallet connect={authenticateWithAddress} />
+        )}
         {nav === 'login' && (
           <VStack align="flex-start" gridGap={4} minW={500}>
             <Heading size="md">

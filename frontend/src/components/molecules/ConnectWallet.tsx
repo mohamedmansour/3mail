@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Ethereumish } from 'ethereum';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgLock } from 'react-icons/cg';
 import { useCeramic } from 'contexts/Ceramic';
 
@@ -22,10 +22,21 @@ declare global {
   }
 }
 
-export function ConnectWallet() {
+interface ConnectWalletProps {
+  connect: () => void;
+}
+
+export function ConnectWallet(props: ConnectWalletProps) {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [networkError, setNetworkError] = useState<string>();
   const { setSelectedAddress: updateSelectedAddress, did } = useCeramic();
+  const { connect } = props;
+
+  useEffect(() => {
+    if (did) {
+      connect();
+    }
+  }, [connect, did]);
 
   if (window.ethereum === undefined) {
     // No Wallet
