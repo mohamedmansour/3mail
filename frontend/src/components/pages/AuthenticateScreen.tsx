@@ -114,7 +114,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               <VStack flex={1}>
                 <Heading size="sm">Decentralized</Heading>
                 <Text>
-                  No centralized servers, IPFS used as means of communication.
+                  There is no central server relaying messages. Messages are sent Peer-to-Peer with data stored on IPFS.
                 </Text>
                 <svg
                   width="203"
@@ -159,7 +159,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               </VStack>
               <VStack flex={1}>
                 <Heading size="sm">Trustless</Heading>
-                <Text>DIDs owned by you. Your identity. Your server.</Text>
+                <Text>Our identity system is built on Decentralized Identifiers (DID's) https://w3c.github.io/did-core/. You own your own idenity, not an Identity Provider.</Text>
                 <svg
                   width="157"
                   height="217"
@@ -262,8 +262,8 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 </svg>
               </VStack>
               <VStack flex={1}>
-                <Heading size="sm">Private</Heading>
-                <Text>Data owned by you, P2P communication to the sender.</Text>
+                <Heading size="sm">Easy to Use!/Heading>
+                <Text>You can send and receive emails using our web3 ui or with a lecgay email client with our local SMTP and IMAP proxy.</Text>
                 <svg
                   width="194"
                   height="216"
