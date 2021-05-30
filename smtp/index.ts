@@ -21,7 +21,7 @@ const onConnect = (session: SMTPServerSession, callback:ErrorCallback) => {
 
 const onMailFrom = (address: SMTPServerAddress, session: SMTPServerSession, callback: ErrorCallback) => {
 
-  console.log("from: "+ session, address);
+  console.log("from:  "+ session, address);
   aMsg["From"] = address.address.toString(); 
   callback();
 }
