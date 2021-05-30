@@ -46,9 +46,9 @@ const makeIpfs = async (offset: number = 1): Promise<IPFS> => {
   return ipfsNode;
 }
 
-const makeOdb = async (dbName: string): Promise<any> => {
-  if (_db) return _db;
-  const odb = await OrbitDB.createInstance(await makeIpfs());
+const makeOdb = async (ipfs: IPFS, dbName: string): Promise<any> => {
+  
+  const odb = await OrbitDB.createInstance(ipfs);
 
   //https://github.com/orbitdb/orbit-db/blob/main/API.md#orbitdblognameaddress
   const db = await odb.eventlog(dbName, {

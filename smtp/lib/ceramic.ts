@@ -23,14 +23,15 @@ const makeCeramic = async(): Promise<{
   const seedBuffer = Uint8Array.from(Buffer.from(seed, 'hex'));
   const provider = new Ed25519Provider(seedBuffer)
   const did = new DID({ provider, resolver })
-  ceramic.setDID(did)
-
-  //use config.json
+  await ceramic.setDID(did)
+  const res = await ceramic.did?.authenticate();
+ 
+  //todo use config.json
   const aliases = {
     message: 'kjzl6cwe1jw148pa1sc5mwhk9f6bthfwhgfbwm021v3x7xj8rwe2efyfiay4qk7',
   }
   const idx = new IDX({ ceramic, aliases });
-
+  
   return {ceramic, idx, did};
 }
 
