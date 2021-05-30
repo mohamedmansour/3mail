@@ -23,7 +23,6 @@ const Content = () => {
           <MailboxScreen
             state={app.state}
             openMessage={app.openMessage}
-            addMessage={app.addMessage}
           />
         </Layout>
       );

@@ -1,3 +1,4 @@
+import { TileDocument } from '@ceramicnetwork/stream-tile';
 import { useCallback, useEffect, useReducer } from 'react';
 import { useCeramic } from './Ceramic';
 import { useOrbitDb } from './OrbitDB';
@@ -172,8 +173,72 @@ export function useApp() {
     messages: [],
   });
 
-  const { ceramic, logout: doLogout } = useCeramic();
+  const { ceramic, did, logout: doLogout } = useCeramic();
+  const { odb, db, setDbName } = useOrbitDb();
 
+  const addMessage = useCallback((message: StoredMessage) => {
+    dispatch({ type: 'message added', message });
+  }, []);
+
+  useEffect(() => {
+    if (did) {
+      setDbName(did.id)
+    }
+  },[setDbName, did]);
+
+  const convertMessage = useCallback((latest: string) => {
+    if (!ceramic) return;
+    (async () => {
+      console.debug("fetching", latest, ceramic);
+      const doc = await TileDocument.load(ceramic, latest  );
+      const content: {
+        date: string;
+        message: string;
+        subject: string;
+      } = doc.content as any;
+
+      console.debug(doc);
+
+      const latestMessage: StoredMessage = {
+        id: doc.id.toString(),
+        date: (new Date(content.date)).getTime(),
+        content: content.message,
+        sender: doc.controllers[0],
+        subject: content.subject,
+        status: 'loaded'
+      }
+      addMessage(latestMessage);
+    })();
+  }, [ceramic, addMessage]);
+
+  useEffect(() => {
+    console.log("eff", db, ceramic);
+    if (!db || !ceramic) return;
+
+    (async () => {
+      const all = db
+      .iterator({ reverse: true, limit: 10 })
+      .collect()
+      .reverse()
+      .map((e: any) => { return e.payload.value.doc});
+      
+      for await (const msg of all) {
+        convertMessage(msg);
+      }
+      
+      db.events.on('replicated', (address: string) => {
+        const all = db
+          .iterator({ reverse: true, limit: 3 })
+          .collect()
+          .reverse()
+          .map((e: any) => { return e.payload.value.doc});
+
+        const latest = all[0];
+        convertMessage(latest);
+      });     
+    
+    })();
+  }, [db, ceramic, convertMessage]);
 
   const startAuth = useCallback(() => {
     dispatch({ type: 'auth', status: 'loading' });
@@ -237,9 +302,7 @@ export function useApp() {
     dispatch({ type: 'search cleared' });
   }, []);
 
-  const addMessage = useCallback((message: StoredMessage) => {
-    dispatch({ type: 'message added', message });
-  }, []);
+
 
   return {
     startAuth,
