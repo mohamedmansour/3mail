@@ -1,4 +1,3 @@
-import { TopLevelLoader } from 'components/molecules/TopLevelLoader';
 import OrbitDB from 'orbit-db';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIpfs } from './IPFS';
@@ -51,7 +50,7 @@ const OrbitDbProvider = ({
         console.debug('replicate', address)
       );
       db.events.on('replicated', (address: string) =>
-        console.log('replicated', address)
+        console.debug('replicated', address)
       );
       db.events.on('replicate.progress', (address: string) =>
         console.debug('replicate.progress', address)
@@ -60,7 +59,7 @@ const OrbitDbProvider = ({
         console.debug('start loading', dbname)
       );
       db.events.on('ready', (dbname: string) => console.log('ready', dbname));
-      console.log("start loading odb");
+      console.debug("start loading odb");
       await db.load();
       setDb(db);
     })();

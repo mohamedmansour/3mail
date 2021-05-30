@@ -26,7 +26,6 @@ const IPFSProvider = ({
   const [ipfsHttpNode, setIpfsHttpNode] = useState<IPFS | undefined>();
 
   useEffect(() => {
-    console.log(remoteNodeUrl);
     if (!remoteNodeUrl) return;
 
     const remoteNode = ipfsHttpCreate({

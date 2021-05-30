@@ -14,6 +14,7 @@ export type AuthState = UnauthenticatedState | AuthenticatedState;
 
 type NavDefaultState = { type: 'default' };
 type NavDraftState = { type: 'draft' };
+
 export type NavMessageState = {
   type: 'message';
   docID: string;
@@ -47,8 +48,8 @@ export type State = Store & (DefaultState | MessageState);
 
 type AuthAction = { type: 'auth'; status: AuthStatus };
 type AuthLogoutAction = { type: 'auth logout' };
-type AuthSuccessAction = { type: 'auth success'; messages: StoredMessage[] };
-type NavMailboxAction = { type: 'nav mailbox'; messages: StoredMessage[] };
+type AuthSuccessAction = { type: 'auth success';};
+type NavMailboxAction = { type: 'nav mailbox'; };
 type NavMessageAction = { type: 'nav message'; docID: string };
 type NavComposeAction = { type: 'nav compose' };
 type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
@@ -68,8 +69,6 @@ type Action =
   | SearchLoadedAction
   | SearchClearedAction
   | AddMessageAction;
-
-const tempDb: StoredMessage[] = [];
 
 // for (let mockIndex = 0; mockIndex < 100; mockIndex++) {
 //   tempDb.push({
@@ -98,7 +97,15 @@ function reducer(state: State, action: Action): State {
         messages: [],
       };
     }
-    case 'nav mailbox':
+    case 'nav mailbox': {
+      return {
+        ...state,
+        auth: state.auth as AuthenticatedState,
+        nav: { type: 'mailbox' },
+        messages: [...state.messages],
+      };
+    }
+
     case 'auth success': {
       const auth = {
         status: 'done',
@@ -107,7 +114,7 @@ function reducer(state: State, action: Action): State {
         searchResults: [],
         auth,
         nav: { type: 'mailbox' },
-        messages: action.messages,
+        messages: [...state.messages],
       };
     }
     case 'nav message':
@@ -189,15 +196,12 @@ export function useApp() {
   const convertMessage = useCallback((latest: string) => {
     if (!ceramic) return;
     (async () => {
-      console.debug("fetching", latest, ceramic);
       const doc = await TileDocument.load(ceramic, latest  );
       const content: {
         date: string;
         message: string;
         subject: string;
       } = doc.content as any;
-
-      console.debug(doc);
 
       const latestMessage: StoredMessage = {
         id: doc.id.toString(),
@@ -212,7 +216,6 @@ export function useApp() {
   }, [ceramic, addMessage]);
 
   useEffect(() => {
-    console.log("eff", db, ceramic);
     if (!db || !ceramic) return;
 
     (async () => {
@@ -245,24 +248,20 @@ export function useApp() {
   }, []);
 
   const authSuccess = useCallback(() => {
-    dispatch({ type: 'auth success', messages: tempDb });
+    dispatch({ type: 'auth success' });
   }, []);
 
   const openMailbox = useCallback(() => {
-    dispatch({ type: 'nav mailbox', messages: tempDb });
+    dispatch({ type: 'nav mailbox' });
   }, []);
 
   const openMessage = useCallback((docID: string) => {
     dispatch({ type: 'nav message', docID });
-    // Here do the fetching
     const msg = state.messages.find(m => m.id === docID);
-    
-    setTimeout(() => {
-      dispatch({
-        type: 'message loaded',
-        message: msg!,
-      });
-    }, 500);
+    dispatch({
+      type: 'message loaded',
+      message: msg!,
+    });
   }, [state.messages]);
 
   const logout = useCallback(() => {
@@ -277,32 +276,20 @@ export function useApp() {
   const search = useCallback((query: string) => {
     if (query.length < 3) return;
     dispatch({ type: 'search loading' });
-    const results: StoredMessage[] = [];
     query = query.toLowerCase();
-    for (let itemIndex in tempDb) {
-      const item = tempDb[itemIndex];
 
-      if (results.length === 10) {
-        break;
-      }
-
-      if (item.content.toLowerCase().indexOf(query) !== -1) {
-        results.push(item);
-      } else if (item.subject.toLowerCase().indexOf(query) !== -1) {
-        results.push(item);
-      } else if (item.sender.toLowerCase().indexOf(query) !== -1) {
-        results.push(item);
-      }
-    }
+    const results = state.messages.filter(m => {
+      return m.content.toLocaleLowerCase().indexOf(query) !== -1
+        || m.subject.toLocaleLowerCase().indexOf(query) !== -1
+        || m.sender.toLocaleLowerCase().indexOf(query) !== -1
+    }).slice(0, 10);
 
     dispatch({ type: 'search loaded', results });
-  }, []);
+  }, [state.messages]);
 
   const clearSearch = useCallback(() => {
     dispatch({ type: 'search cleared' });
   }, []);
-
-
 
   return {
     startAuth,
