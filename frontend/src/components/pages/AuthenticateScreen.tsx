@@ -60,14 +60,15 @@ function AuthenticateScreen(props: AuthenticateProps) {
     await navigator.clipboard.writeText(seed || '');
   };
 
-  const handleLogin = () => {
-    generatePrivateKey();
+  const handleLogin = async () => {
+    const privateKey = await generatePrivateKey();
     // if (seed) {
-    // try {
-    //   authenticate(fromString(seed, 'base16'));
-    // } catch (e) {
-    //   setError('Seed should be base16-encoded string of 32 bytes length.');
-    // }
+    try {
+      console.log(`seed: ${privateKey.seed}`)
+      authenticate(privateKey.seed);
+    } catch (e) {
+      setError('Seed should be base16-encoded string of 32 bytes length.');
+    }
     // }
   };
 
