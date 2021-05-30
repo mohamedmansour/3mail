@@ -82,7 +82,7 @@ type AuthResponseCallback = (
       const payload = {
         "time": (new Date).toISOString(),
         "from": did.id,
-        "doc": doc.id.toUrl()
+        "doc": doc.id.toString()
       };
 
       await db.add(payload)

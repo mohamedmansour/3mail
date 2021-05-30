@@ -1,38 +1,75 @@
+import CeramicClient from '@ceramicnetwork/http-client';
+import { TileDocument } from '@ceramicnetwork/stream-tile';
 import { Box } from '@chakra-ui/layout';
+import { useCeramic } from 'contexts/Ceramic';
 import { useIpfs } from 'contexts/IPFS';
 import { useOrbitDb } from 'contexts/OrbitDB';
+import { StoredMessage } from 'contexts/State';
 import React, { useEffect, useState } from 'react';
 
-const OrbitDbTest = () => {
-  // eslint-disable-next-line
+const OrbitDbTest = ({addMessage}:
+  {
+    addMessage: (msg: StoredMessage) => void 
+  }
+) => {
   const { ipfs } = useIpfs();
-  // eslint-disable-next-line
-  const { odb, db } = useOrbitDb();
+  const { odb, db, setDbName } = useOrbitDb();
+  const { ceramic } = useCeramic();
 
   const [messages, setMessages] = useState<Record<string, any>[]>([]);
 
   useEffect(() => {
-    if (!db) return;
+    //todo: set to app states' did     
+    if (!ceramic)
+      return;
+    setDbName('did:key:z6MkvpyzVtYLETJFaYXs3My4vtXMdZs7SjmmQQEpL9nH7MmY')
+    //@ts-ignore
+  }, [ceramic]);
+
+  const convertMessages = async (ceramic: CeramicClient, latest:string) => {
+    console.debug("fetching", latest , ceramic);
+    const doc = await TileDocument.load(ceramic, latest  );
+    const content: {
+      date: string;
+      message: string;
+      subject: string;
+    } = doc.content as any;
+
+    // console.log(doc);
+    // console.log(doc.content);
+
+    const latestMessage: StoredMessage = {
+      id: "none",
+      date: (new Date(content.date)).getTime(),
+      content: content.message,
+      sender: "some DID",
+      subject: content.subject,
+      status: 'loaded'
+    }
+    addMessage(latestMessage);
+  }
+
+
+  useEffect(() => {
+    if (!db || !ceramic) return;
+    console.log("listening");
     db.events.on('replicated', (address: string) => {
       const all = db
         .iterator({ limit: 10 })
         .collect()
         .reverse()
-        .map((e: any) => e.payload.value);
-      setMessages(all);
+        .map((e: any) => { return e.payload.value.doc});
+      
+      const latest = all[0];
+
+      convertMessages(ceramic, latest);
     });
-  }, [db]);
+    //@ts-ignore
+  }, [db, ceramic]);
 
   return (
     <Box position="fixed" bottom="0">
       ODB
-      <ul>
-        {messages.map((m, i) => (
-          <li key={`m-${i}`}>
-            {m['the time']} | {m.doc} | {m.to}
-          </li>
-        ))}
-      </ul>
     </Box>
   );
 };

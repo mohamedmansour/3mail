@@ -86,6 +86,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       await did.authenticate();
       await _ceramic.setDID(did);
       setCeramic(_ceramic);
+      
       setDID(did);
 
       // Create the IDX instance with the definitions aliases from the config

@@ -6,46 +6,48 @@ import { useIpfs } from './IPFS';
 type OrbitDbContextType = {
   odb?: any; //the orbitdb instance
   db?: any; //an eventlog instance
+  setDbName: (s: string) => void
 };
 const OrbitDbContext = React.createContext<OrbitDbContextType>({
   odb: undefined,
   db: undefined,
+  setDbName: () => {}
 });
 
 const useOrbitDb = () => useContext(OrbitDbContext);
 
 const OrbitDbProvider = ({
-  dbName,
   children,
 }: {
-  dbName: string;
   children: React.ReactNode;
 }) => {
   const { ipfs, ipfsHttpNode } = useIpfs();
   const [odb, setOdb] = useState<any | undefined>();
   const [db, setDb] = useState<any | undefined>();
+  const [dbName, setDbName] = useState<string | undefined>();
 
   useEffect(() => {
-    const nodeToUse = ipfsHttpNode ?? ipfs;
-    if (!nodeToUse) return;
+    if (!ipfsHttpNode) return;
     (async () => {
-      const orbitDb = await OrbitDB.createInstance(nodeToUse);
+      const orbitDb = await OrbitDB.createInstance(ipfsHttpNode);
       console.log('ODB Identity', orbitDb.identity.toJSON());
       setOdb(orbitDb);
     })();
   }, [ipfs, ipfsHttpNode]);
 
   useEffect(() => {
-    if (!odb) return;
+    console.log("loading db", dbName);
+    if (!odb || !dbName) return;
 
     (async () => {
       //https://github.com/orbitdb/orbit-db/blob/main/API.md#orbitdblognameaddress
+      console.debug("starting odb", dbName);
       const db = await odb.eventlog(dbName, {
         accessController: {
           write: ['*'], // Give write access to everyone
         },
       });
-
+      
       db.events.on('replicate', (address: string) =>
         console.debug('replicate', address)
       );
@@ -60,6 +62,7 @@ const OrbitDbProvider = ({
       );
       db.events.on('ready', (dbname: string) => console.log('ready', dbname));
 
+      
       await db.load();
 
       setDb(db);
@@ -71,9 +74,10 @@ const OrbitDbProvider = ({
       value={{
         odb,
         db,
+        setDbName
       }}
     >
-      {db ? children : <TopLevelLoader>loading odb</TopLevelLoader>}
+      {children}
     </OrbitDbContext.Provider>
   );
 };
