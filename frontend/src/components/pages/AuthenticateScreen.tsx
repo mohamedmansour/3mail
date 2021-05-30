@@ -107,7 +107,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
         {nav === 'default' && (
           <VStack align="center" w="940px" gridGap={10}>
             <VStack gridGap={4}>
-              <Text>
+              <Text fontWeight={400}>
                 Welcome to the first ever Decentralized Email Service!
               </Text>
               <LogoIcon fontSize={200} color="#8E54A2" />
@@ -115,7 +115,9 @@ function AuthenticateScreen(props: AuthenticateProps) {
             <Divider />
             <HStack margin={10}>
               <VStack flex={1} height="250px">
-                <Heading size="sm">Decentralized</Heading>
+                <Heading size="sm" fontWeight={500}>
+                  Decentralized
+                </Heading>
                 <Text>
                   There is no central server relaying messages. Messages are
                   sent Peer-to-Peer with data stored on IPFS.
@@ -306,7 +308,9 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 </svg>
               </VStack>
               <VStack flex={1} height="250px">
-                <Heading size="sm">Trustless</Heading>
+                <Heading size="sm" fontWeight={500}>
+                  Trustless
+                </Heading>
                 <Text>
                   Our identity system is built on Decentralized Identifiers
                   (DID's) https://w3c.github.io/did-core/. You own your own
@@ -326,7 +330,9 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 </svg>
               </VStack>
               <VStack flex={1} height="250px">
-                <Heading size="sm">Easy to Use!</Heading>
+                <Heading size="sm" fontWeight={500}>
+                  Easy to Use!
+                </Heading>
                 <Text>
                   You can send and receive emails using our web3 ui or with a
                   lecgay email client with our local SMTP and IMAP proxy. Easily
@@ -406,7 +412,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
             </HStack>
             <Divider />
             <VStack>
-              <Text fontWeight="bold">Made possible by:</Text>
+              <Text fontWeight={500}>Made possible by</Text>
               <Image
                 src="/technology.png"
                 alt="ceramic, orbitdb, ens, ipfs, ethereum"
