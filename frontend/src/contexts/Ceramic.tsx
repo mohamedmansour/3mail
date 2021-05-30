@@ -28,17 +28,17 @@ type CeramicContextType = {
   ceramic?: Ceramic;
   idx?: IDX;
   inbox?: TileDocument;
+  didId?: string;
   setSeed: (s: Uint8Array) => void;
   setSelectedAddress: (s: string) => void;
-  getDidId: () => string;
 };
 const CeramicContext = React.createContext<CeramicContextType>({
   ceramic: undefined,
   idx: undefined,
   inbox: undefined,
+  didId: undefined,
   setSeed: () => {},
   setSelectedAddress: () => {},
-  getDidId: () => '',
 });
 
 const useCeramic = () => useContext(CeramicContext);
@@ -64,18 +64,12 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
   const [did, setDID] = useState<DID>();
   const [seed, setSeed] = useState<Uint8Array>();
   const [selectedAddress, setSelectedAddress] = useState<string>();
-
-  function getDidId() {
-    if (!did) {
-      return '';
-    }
-
-    return did.id;
-  }
+  const [didId, setDidId] = useState<string>();
 
   useEffect(() => {
     if (!seed) return;
 
+    setDidId(undefined);
     (async () => {
       // Create the Ceramic instance and inject provider
       const _ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string);
@@ -100,12 +94,14 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       // Load the existing notes
       const relayId = `relay-${did.id}`;
       console.log('RelayID', relayId);
+      setDidId(relayId);
     })();
   }, [seed]);
 
   useEffect(() => {
     if (!selectedAddress) return;
 
+    setDidId(undefined);
     (async () => {
       // Create the Ceramic instance and inject provider
       const _ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string);
@@ -118,8 +114,19 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       await threeIdConnect.connect(authProvider);
 
       const provider = threeIdConnect.getDidProvider();
-      const did = _ceramic.did;
+
+      const resolverRegistry: ResolverRegistry = {
+        ...KeyDidResolver.getResolver(),
+        ...ThreeIdResolver.getResolver(_ceramic),
+      };
+
+      const did = new DID({
+        provider,
+        resolver: resolverRegistry,
+      });
+
       if (!did) {
+        console.error('Ceramic DID undefined');
         return;
       }
 
@@ -136,6 +143,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       // Load the existing notes
       const relayId = `relay-${did.id}`;
       console.log('RelayID', relayId);
+      setDidId(relayId);
     })();
   }, [selectedAddress]);
 
@@ -160,7 +168,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
         ceramic,
         idx,
         inbox,
-        getDidId,
+        didId,
         setSeed,
         setSelectedAddress,
       }}
