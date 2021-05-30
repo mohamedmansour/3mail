@@ -18,6 +18,7 @@ import {
   CgTrash,
 } from 'react-icons/cg';
 import { createRef, useEffect, useState } from 'react';
+import { LogoIcon } from 'components/branding/Logo';
 
 type MessageScreenProps = {
   closeMessage: () => void;
@@ -53,11 +54,12 @@ function MessageScreen(props: MessageScreenProps) {
         <CgChevronLeft />
       </Button>
       <Flex direction="column" marginLeft={4}>
+        {!nav.message && <Text minH={100}> loading mail... </Text>}
         {nav.message && (
           <>
             <Heading>{nav.message.subject}</Heading>
             <Flex color="gray" alignItems="center">
-              <CgUser />
+              <LogoIcon />
               <Text marginRight={1}>
                 {nav.message.sender} on{' '}
                 {Intl.DateTimeFormat(navigator.language, {

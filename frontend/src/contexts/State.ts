@@ -43,12 +43,14 @@ type MessageState = {
 export type State = Store & (DefaultState | MessageState);
 
 type AuthAction = { type: 'auth'; status: AuthStatus };
+type AuthLogoutAction = { type: 'auth logout' };
 type AuthSuccessAction = { type: 'auth success'; messages: StoredMessage[] };
 type NavMailboxAction = { type: 'nav mailbox'; messages: StoredMessage[] };
 type NavMessageAction = { type: 'nav message'; docID: string };
 type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
 type Action =
   | AuthAction
+  | AuthLogoutAction
   | AuthSuccessAction
   | NavMailboxAction
   | NavMessageAction
@@ -90,6 +92,14 @@ function reducer(state: State, action: Action): State {
         nav: { type: 'default' },
         auth: { status: action.status },
       };
+    case 'auth logout': {
+      return {
+        auth: { status: 'pending' },
+        draftStatus: 'unsaved',
+        nav: { type: 'default' },
+        messages: [],
+      };
+    }
     case 'nav mailbox':
     case 'auth success': {
       const auth = {
@@ -156,10 +166,15 @@ export function useApp() {
     }, 500);
   }, []);
 
+  const logout = useCallback(() => {
+    dispatch({ type: 'auth logout' });
+  }, []);
+
   return {
     authenticate,
     openMessage,
     openMailbox,
+    logout,
     state,
   };
 }

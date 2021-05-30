@@ -1,28 +1,31 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-import { CgMail } from 'react-icons/cg';
+import { LogoIcon } from 'components/branding/Logo';
 
-const Header = () => {
+interface HeaderProps {
+  logout: () => void;
+  home: () => void;
+}
+const Header = (props: HeaderProps) => {
   return (
     <Flex
       as="nav"
       align="center"
       justify="space-between"
       padding="0.5rem"
-      bg="black"
+      bg="purple"
       color="white"
     >
-      <Flex>
+      <Flex onClick={props.home} cursor="pointer">
         <Heading as="h1" size="lg" mr={4}>
-          <CgMail />
+          <LogoIcon />
         </Heading>
-
         <Box display={['none', 'flex']} alignItems="center">
           cemail
         </Box>
       </Flex>
       <Box>
-        <Button bg="transparent" border="1px">
-          Login
+        <Button colorScheme="blackAlpha" border="1px" onClick={props.logout}>
+          Logout
         </Button>
       </Box>
     </Flex>

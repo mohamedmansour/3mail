@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/layout';
 import { useIpfs } from 'contexts/IPFS';
 import { useOrbitDb } from 'contexts/OrbitDB';
 import React, { useEffect, useState } from 'react';
@@ -23,7 +24,7 @@ const OrbitDbTest = () => {
   }, [db]);
 
   return (
-    <div>
+    <Box position="fixed" bottom="0">
       ODB
       <ul>
         {messages.map((m, i) => (
@@ -32,7 +33,7 @@ const OrbitDbTest = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </Box>
   );
 };
 

@@ -11,7 +11,7 @@ const Content = () => {
     case 'mailbox':
       screen = (
         <>
-          <Header />
+          <Header logout={app.logout} home={app.openMailbox} />
           <MailboxScreen state={app.state} openMessage={app.openMessage} />
         </>
       );
@@ -19,7 +19,7 @@ const Content = () => {
     case 'message':
       screen = (
         <>
-          <Header />
+          <Header logout={app.logout} home={app.openMailbox} />
           <MessageScreen closeMessage={app.openMailbox} state={app.state} />
         </>
       );

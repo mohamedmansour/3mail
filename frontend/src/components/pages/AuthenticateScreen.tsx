@@ -19,7 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';
-import { CgLock, CgMail } from 'react-icons/cg';
+import { CgLock } from 'react-icons/cg';
+import { LogoIcon } from 'components/branding/Logo';
 
 type AuthenticateProps = {
   authenticate: (seed: Uint8Array) => void;
@@ -71,11 +72,12 @@ function AuthenticateScreen(props: AuthenticateProps) {
         align="center"
         justify="space-between"
         padding="0.5rem"
-        bg="gray.800"
-        color="white"
+        bg="whiteAlpha.100"
+        color="black"
+        boxShadow="md"
       >
         <HStack cursor="pointer" onClick={() => setNav('default')}>
-          <CgMail size={24} />
+          <LogoIcon fontSize={24} color="#8E54A2" />
           <Text fontSize={20}>cemail</Text>
         </HStack>
         <Spacer />
@@ -88,7 +90,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
         </Button>
         <Button
           disabled={isLoading}
-          colorScheme="blackAlpha"
+          colorScheme="purple"
           onClick={handleCreateAccount}
         >
           Create Account
