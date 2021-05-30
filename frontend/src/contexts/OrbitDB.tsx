@@ -36,7 +36,6 @@ const OrbitDbProvider = ({
   }, [ipfs, ipfsHttpNode]);
 
   useEffect(() => {
-    console.log("loading db", dbName);
     if (!odb || !dbName) return;
 
     (async () => {
@@ -61,10 +60,8 @@ const OrbitDbProvider = ({
         console.debug('start loading', dbname)
       );
       db.events.on('ready', (dbname: string) => console.log('ready', dbname));
-
-      
+      console.log("start loading odb");
       await db.load();
-
       setDb(db);
     })();
   }, [odb, ipfs, dbName]);

@@ -23,7 +23,6 @@ const Content = () => {
           <MailboxScreen
             state={app.state}
             openMessage={app.openMessage}
-            addMessage={app.addMessage}
           />
         </Layout>
       );
@@ -58,8 +57,8 @@ const Content = () => {
     default:
       return (
         <AuthenticateScreen
-          authenticateWithSeed={app.authenticateWithSeed}
-          authenticateWithAddress={app.openMailbox}
+          startAuth ={app.startAuth}
+          authSuccess={app.authSuccess}
           state={app.state.auth}
         />
       );

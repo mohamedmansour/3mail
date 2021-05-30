@@ -1,5 +1,7 @@
-import { useCallback, useReducer } from 'react';
+import { TileDocument } from '@ceramicnetwork/stream-tile';
+import { useCallback, useEffect, useReducer } from 'react';
 import { useCeramic } from './Ceramic';
+import { useOrbitDb } from './OrbitDB';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
 export type DraftStatus = 'unsaved' | 'saving' | 'failed' | 'saved';
@@ -171,19 +173,80 @@ export function useApp() {
     messages: [],
   });
 
-  const { setSeed: updateSeed } = useCeramic();
+  const { ceramic, did, logout: doLogout } = useCeramic();
+  const { odb, db, setDbName } = useOrbitDb();
 
-  const authenticateWithSeed = useCallback(
-    (seed: Uint8Array) => {
-      dispatch({ type: 'auth', status: 'loading' });
-      // Imitate loading
-      updateSeed(seed);
-      setTimeout(() => {
-        dispatch({ type: 'auth success', messages: tempDb });
-      }, 500);
-    },
-    [updateSeed]
-  );
+  const addMessage = useCallback((message: StoredMessage) => {
+    dispatch({ type: 'message added', message });
+  }, []);
+
+  useEffect(() => {
+    if (did) {
+      setDbName(did.id)
+    }
+  },[setDbName, did]);
+
+  const convertMessage = useCallback((latest: string) => {
+    if (!ceramic) return;
+    (async () => {
+      console.debug("fetching", latest, ceramic);
+      const doc = await TileDocument.load(ceramic, latest  );
+      const content: {
+        date: string;
+        message: string;
+        subject: string;
+      } = doc.content as any;
+
+      console.debug(doc);
+
+      const latestMessage: StoredMessage = {
+        id: doc.id.toString(),
+        date: (new Date(content.date)).getTime(),
+        content: content.message,
+        sender: doc.controllers[0],
+        subject: content.subject,
+        status: 'loaded'
+      }
+      addMessage(latestMessage);
+    })();
+  }, [ceramic, addMessage]);
+
+  useEffect(() => {
+    console.log("eff", db, ceramic);
+    if (!db || !ceramic) return;
+
+    (async () => {
+      const all = db
+      .iterator({ reverse: true, limit: 10 })
+      .collect()
+      .reverse()
+      .map((e: any) => { return e.payload.value.doc});
+      
+      for await (const msg of all) {
+        convertMessage(msg);
+      }
+      
+      db.events.on('replicated', (address: string) => {
+        const all = db
+          .iterator({ reverse: true, limit: 3 })
+          .collect()
+          .reverse()
+          .map((e: any) => { return e.payload.value.doc});
+
+        const latest = all[0];
+        convertMessage(latest);
+      });     
+    
+    })();
+  }, [db, ceramic, convertMessage]);
+
+  const startAuth = useCallback(() => {
+    dispatch({ type: 'auth', status: 'loading' });
+  }, []);
+
+  const authSuccess = useCallback(() => {
+    dispatch({ type: 'auth success', messages: tempDb });
+  }, []);
 
   const openMailbox = useCallback(() => {
     dispatch({ type: 'nav mailbox', messages: tempDb });
@@ -192,17 +255,20 @@ export function useApp() {
   const openMessage = useCallback((docID: string) => {
     dispatch({ type: 'nav message', docID });
     // Here do the fetching
+    const msg = state.messages.find(m => m.id === docID);
+    
     setTimeout(() => {
       dispatch({
         type: 'message loaded',
-        message: tempDb[parseInt(docID)],
+        message: msg!,
       });
     }, 500);
-  }, []);
+  }, [state.messages]);
 
   const logout = useCallback(() => {
+    doLogout();
     dispatch({ type: 'auth logout' });
-  }, []);
+  }, [doLogout]);
 
   const openCompose = useCallback(() => {
     dispatch({ type: 'nav compose' });
@@ -236,12 +302,11 @@ export function useApp() {
     dispatch({ type: 'search cleared' });
   }, []);
 
-  const addMessage = useCallback((message: StoredMessage) => {
-    dispatch({ type: 'message added', message });
-  }, []);
+
 
   return {
-    authenticateWithSeed,
+    startAuth,
+    authSuccess,
     openMessage,
     openMailbox,
     openCompose,

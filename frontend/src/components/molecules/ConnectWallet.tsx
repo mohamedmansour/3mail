@@ -23,20 +23,20 @@ declare global {
 }
 
 interface ConnectWalletProps {
-  connect: () => void;
+  connected: () => void;
 }
 
 export function ConnectWallet(props: ConnectWalletProps) {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [networkError, setNetworkError] = useState<string>();
-  const { setSelectedAddress: updateSelectedAddress, did } = useCeramic();
-  const { connect } = props;
+  const { loginWith3Id , did } = useCeramic();
+  const { connected } = props;
 
   useEffect(() => {
     if (did) {
-      connect();
+      connected();
     }
-  }, [connect, did]);
+  }, [did, connected]);
 
   if (window.ethereum === undefined) {
     // No Wallet
@@ -61,7 +61,7 @@ export function ConnectWallet(props: ConnectWalletProps) {
           {networkError && (
             <Alert status="error" marginBottom={4}>
               <AlertIcon />
-              <AlertTitle mr={2}>Invalid Seed!</AlertTitle>
+              <AlertTitle mr={2}>Invalid Network!</AlertTitle>
               <AlertDescription>{networkError}</AlertDescription>
               <CloseButton
                 position="absolute"
@@ -89,10 +89,10 @@ export function ConnectWallet(props: ConnectWalletProps) {
   async function connectWallet() {
     const [selectedAddress] = await window.ethereum.enable();
 
-    initialize(selectedAddress);
+    await loginWith3Id(selectedAddress);
 
     // We reinitialize it whenever the user changes their account.
-    window.ethereum.on('accountsChanged', ([newAddress]) => {
+    window.ethereum.on('accountsChanged', async ([newAddress]) => {
       // `accountsChanged` event can be triggered with an undefined newAddress.
       // This happens when the user removes the Dapp from the "Connected
       // list of sites allowed access to your addresses" (Metamask > Settings > Connections)
@@ -101,7 +101,7 @@ export function ConnectWallet(props: ConnectWalletProps) {
         return resetState();
       }
 
-      initialize(newAddress);
+      await loginWith3Id(newAddress);
     });
 
     // We reset the dapp state if the network is changed
@@ -111,11 +111,6 @@ export function ConnectWallet(props: ConnectWalletProps) {
   function resetState() {
     setSelectedAddress(undefined);
     setNetworkError(undefined);
-  }
-
-  async function initialize(userAddress: string) {
-    setSelectedAddress(userAddress);
-    updateSelectedAddress(userAddress);
   }
 
   // Connected
