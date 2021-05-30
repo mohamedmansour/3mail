@@ -62,14 +62,14 @@ function AuthenticateScreen(props: AuthenticateProps) {
 
   const handleLogin = async () => {
     const privateKey = await generatePrivateKey();
-    // if (seed) {
-    try {
-      console.log(`seed: ${privateKey.seed}`)
-      authenticate(privateKey.seed);
-    } catch (e) {
-      setError('Seed should be base16-encoded string of 32 bytes length.');
+    if (privateKey.seed) {
+      try {
+        console.log(`seed: ${privateKey.seed}`)
+        authenticate(privateKey.seed);
+      } catch (e) {
+        setError('Seed should be base16-encoded string of 32 bytes length.');
+      }
     }
-    // }
   };
 
   return (
