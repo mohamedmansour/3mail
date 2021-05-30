@@ -43,6 +43,8 @@ const MailboxItem = (props: MailboxItemProps) => {
           {Intl.DateTimeFormat(navigator.language, {
             month: 'short',
             day: 'numeric',
+            hour: "numeric",
+            minute:"numeric"
           }).format(props.message.date)}
         </Text>
       </Flex>

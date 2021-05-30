@@ -58,8 +58,8 @@ const Content = () => {
     default:
       return (
         <AuthenticateScreen
-          authenticateWithSeed={app.authenticateWithSeed}
-          authenticateWithAddress={app.openMailbox}
+          startAuth ={app.startAuth}
+          authSuccess={app.authSuccess}
           state={app.state.auth}
         />
       );

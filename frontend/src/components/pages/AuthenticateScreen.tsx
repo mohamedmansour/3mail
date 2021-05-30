@@ -23,10 +23,11 @@ import { CgLock } from 'react-icons/cg';
 import { LogoIcon } from 'components/branding/Logo';
 import Welcome from 'components/branding/Welcome';
 import { ConnectWallet } from 'components/molecules/ConnectWallet';
+import { useCeramic } from 'contexts/Ceramic';
 
 type AuthenticateProps = {
-  authenticateWithSeed: (seed: Uint8Array) => void;
-  authenticateWithAddress: () => void;
+  startAuth: () => void;
+  authSuccess: () => void;
   state: AuthState;
 };
 
@@ -35,7 +36,9 @@ function AuthenticateScreen(props: AuthenticateProps) {
     useState<'default' | 'login' | 'create' | 'connect'>('default');
   const [seed, setSeed] = useState<string>();
   const [error, setError] = useState<string>();
-  const { authenticateWithSeed, authenticateWithAddress, state } = props;
+  const { loginWithSeed } = useCeramic();
+
+  const { state, startAuth, authSuccess } = props;
   const isLoading = state.status === 'loading';
 
   if (state.status === 'done') {
@@ -60,10 +63,12 @@ function AuthenticateScreen(props: AuthenticateProps) {
     await navigator.clipboard.writeText(seed || '');
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (seed) {
       try {
-        authenticateWithSeed(fromString(seed, 'base16'));
+        startAuth();
+        await loginWithSeed(seed);
+        authSuccess();
       } catch (e) {
         setError('Seed should be base16-encoded string of 32 bytes length.');
       }
@@ -115,7 +120,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
       >
         {nav === 'default' && <Welcome />}
         {nav === 'connect' && (
-          <ConnectWallet connect={authenticateWithAddress} />
+          <ConnectWallet connected={authSuccess} />
         )}
         {nav === 'login' && (
           <VStack align="flex-start" gridGap={4} minW={500}>

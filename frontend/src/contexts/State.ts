@@ -1,5 +1,6 @@
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { useCeramic } from './Ceramic';
+import { useOrbitDb } from './OrbitDB';
 
 type AuthStatus = 'pending' | 'loading' | 'failed';
 export type DraftStatus = 'unsaved' | 'saving' | 'failed' | 'saved';
@@ -171,19 +172,16 @@ export function useApp() {
     messages: [],
   });
 
-  const { setSeed: updateSeed } = useCeramic();
+  const { ceramic, logout: doLogout } = useCeramic();
 
-  const authenticateWithSeed = useCallback(
-    (seed: Uint8Array) => {
-      dispatch({ type: 'auth', status: 'loading' });
-      // Imitate loading
-      updateSeed(seed);
-      setTimeout(() => {
-        dispatch({ type: 'auth success', messages: tempDb });
-      }, 500);
-    },
-    [updateSeed]
-  );
+
+  const startAuth = useCallback(() => {
+    dispatch({ type: 'auth', status: 'loading' });
+  }, []);
+
+  const authSuccess = useCallback(() => {
+    dispatch({ type: 'auth success', messages: tempDb });
+  }, []);
 
   const openMailbox = useCallback(() => {
     dispatch({ type: 'nav mailbox', messages: tempDb });
@@ -203,8 +201,9 @@ export function useApp() {
   }, [state.messages]);
 
   const logout = useCallback(() => {
+    doLogout();
     dispatch({ type: 'auth logout' });
-  }, []);
+  }, [doLogout]);
 
   const openCompose = useCallback(() => {
     dispatch({ type: 'nav compose' });
@@ -243,7 +242,8 @@ export function useApp() {
   }, []);
 
   return {
-    authenticateWithSeed,
+    startAuth,
+    authSuccess,
     openMessage,
     openMailbox,
     openCompose,
