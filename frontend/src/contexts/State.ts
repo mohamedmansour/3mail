@@ -57,32 +57,18 @@ type Action =
   | MessageLoadedAction;
 
 const currentDateInMs = Date.now();
-const tempDb: StoredMessage[] = [
-  {
-    date: currentDateInMs,
+const tempDb: StoredMessage[] = [];
+
+for (let mockIndex = 0; mockIndex < 100; mockIndex++) {
+  tempDb.push({
+    date: currentDateInMs + 1000 * 60 * 60 * mockIndex,
     status: 'loaded',
-    id: '0',
+    id: mockIndex.toString(),
     sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
     subject: loremIpsum(),
     content: loremIpsum({ count: 1, units: 'paragraphs' }),
-  },
-  {
-    date: currentDateInMs - 1000 * 60 * 60,
-    status: 'loaded',
-    id: '1',
-    sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
-    subject: loremIpsum(),
-    content: loremIpsum({ count: 2, units: 'paragraphs' }),
-  },
-  {
-    date: currentDateInMs - 1000 * 60 * 60 * 48,
-    status: 'loaded',
-    id: '2',
-    sender: `${loremIpsum({ count: 1, units: 'word' })}.eth`,
-    subject: loremIpsum(),
-    content: loremIpsum({ count: 3, units: 'paragraphs' }),
-  },
-];
+  });
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
