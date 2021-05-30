@@ -18,6 +18,7 @@ export type NavMessageState = {
   message?: StoredMessage;
 };
 type NavMailboxState = { type: 'mailbox' };
+type NavComposeState = { type: 'compose' };
 
 export type StoredMessage = {
   id: string;
@@ -38,7 +39,7 @@ type DefaultState = {
 };
 type MessageState = {
   auth: AuthenticatedState;
-  nav: NavDraftState | NavMessageState | NavMailboxState;
+  nav: NavDraftState | NavMessageState | NavMailboxState | NavComposeState;
 };
 export type State = Store & (DefaultState | MessageState);
 
@@ -47,11 +48,13 @@ type AuthLogoutAction = { type: 'auth logout' };
 type AuthSuccessAction = { type: 'auth success'; messages: StoredMessage[] };
 type NavMailboxAction = { type: 'nav mailbox'; messages: StoredMessage[] };
 type NavMessageAction = { type: 'nav message'; docID: string };
+type NavComposeAction = { type: 'nav compose' };
 type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
 type Action =
   | AuthAction
   | AuthLogoutAction
   | AuthSuccessAction
+  | NavComposeAction
   | NavMailboxAction
   | NavMessageAction
   | MessageLoadedAction;
@@ -107,6 +110,14 @@ function reducer(state: State, action: Action): State {
           docID: action.docID,
         },
       };
+    case 'nav compose':
+      return {
+        ...state,
+        auth: state.auth as AuthenticatedState,
+        nav: {
+          type: 'compose',
+        },
+      };
     case 'message loaded':
       return {
         ...state,
@@ -156,11 +167,16 @@ export function useApp() {
     dispatch({ type: 'auth logout' });
   }, []);
 
+  const compose = useCallback(() => {
+    dispatch({ type: 'nav compose' });
+  }, []);
+
   return {
     authenticate,
     openMessage,
     openMailbox,
     logout,
+    compose,
     state,
   };
 }

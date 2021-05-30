@@ -1,15 +1,16 @@
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, HStack } from '@chakra-ui/react';
 import { LogoIcon } from 'components/branding/Logo';
 
 interface LayoutProps {
   children: React.ReactNode;
   logout: () => void;
   home: () => void;
+  compose: () => void;
 }
 
 export function Layout(props: LayoutProps) {
   return (
-    <Flex direction="column" overflow="hidden">
+    <Flex direction="column" overflow="hidden" height="inherit">
       <Flex
         as="nav"
         align="center"
@@ -17,6 +18,7 @@ export function Layout(props: LayoutProps) {
         padding="0.5rem"
         bg="#8E54A2"
         color="white"
+        boxShadow="md"
       >
         <Flex onClick={props.home} cursor="pointer">
           <Heading as="h1" size="lg" mr={4}>
@@ -26,11 +28,14 @@ export function Layout(props: LayoutProps) {
             cemail
           </Box>
         </Flex>
-        <Box>
-          <Button colorScheme="blackAlpha" border="1px" onClick={props.logout}>
+        <HStack>
+          <Button colorScheme="whiteAlpha" onClick={props.compose}>
+            Compose
+          </Button>
+          <Button colorScheme="blackAlpha" onClick={props.logout}>
             Logout
           </Button>
-        </Box>
+        </HStack>
       </Flex>
       <Flex flex={1} overflowY="auto" w="100%">
         {props.children}

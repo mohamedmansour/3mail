@@ -48,11 +48,18 @@ function MessageScreen(props: MessageScreenProps) {
   const nav = props.state.nav as NavMessageState;
 
   return (
-    <Flex direction="row" padding={4} width="inherit">
-      <Button onClick={props.closeMessage} flexShrink={0}>
+    <Flex direction="row" width="inherit" overflow="hidden">
+      <Button onClick={props.closeMessage} flexShrink={0} margin={4}>
         <CgChevronLeft />
       </Button>
-      <Flex direction="column" marginLeft={4}>
+      <Flex
+        direction="column"
+        marginLeft={4}
+        overflowY="auto"
+        paddingTop={4}
+        paddingBottom={4}
+        paddingRight={4}
+      >
         {!nav.message && <Text minH={100}> loading mail... </Text>}
         {nav.message && (
           <>
@@ -68,9 +75,7 @@ function MessageScreen(props: MessageScreenProps) {
               </Text>
               <CgTime />
             </Flex>
-            <Text flexGrow={1} marginTop={4}>
-              {nav.message.content}
-            </Text>
+            <Text marginTop={4}>{nav.message.content}</Text>
           </>
         )}
 
