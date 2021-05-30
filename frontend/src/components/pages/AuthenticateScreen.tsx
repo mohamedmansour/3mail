@@ -32,7 +32,8 @@ type AuthenticateProps = {
 };
 
 function AuthenticateScreen(props: AuthenticateProps) {
-  const [nav, setNav] = useState<'default' | 'login' | 'create'>('default');
+  const [nav, setNav] =
+    useState<'default' | 'login' | 'loginWithMetamask' | 'create'>('default');
   const [seed, setSeed] = useState<string>();
   const [error, setError] = useState<string>();
   const { authenticate, state } = props;
@@ -60,11 +61,21 @@ function AuthenticateScreen(props: AuthenticateProps) {
     await navigator.clipboard.writeText(seed || '');
   };
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
+    if (seed) {
+      try {
+        authenticate(fromString(seed, 'base16'));
+      } catch (e) {
+        setError('Seed should be base16-encoded string of 32 bytes length.');
+      }
+    }
+  };
+
+  const handleLoginWithMetamask = async () => {
     const privateKey = await generatePrivateKey();
     if (privateKey.seed) {
       try {
-        console.log(`seed: ${privateKey.seed}`)
+        console.log(`seed: ${privateKey.seed}`);
         authenticate(privateKey.seed);
       } catch (e) {
         setError('Seed should be base16-encoded string of 32 bytes length.');
@@ -87,6 +98,10 @@ function AuthenticateScreen(props: AuthenticateProps) {
           <Text fontSize={20}>cemail</Text>
         </HStack>
         <Spacer />
+        <Button onClick={handleLoginWithMetamask} variant="contained">
+          Login With Metamask
+        </Button>
+
         <Button
           disabled={seed === '' || isLoading}
           onClick={() => setNav('login')}
