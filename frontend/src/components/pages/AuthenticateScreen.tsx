@@ -264,7 +264,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               </VStack>
               <VStack flex={1}>
                 <Heading size="sm">Private</Heading>
-                <Text>Date owned by you, P2P communication to the sender.</Text>
+                <Text>Data owned by you, P2P communication to the sender.</Text>
                 <svg
                   width="194"
                   height="216"
