@@ -1,8 +1,6 @@
-import {IPFS, create as createIPFS} from "ipfs-core";
-//@ts-ignore
-import { create as createHttpClient } from 'ipfs-http-client'
-
+import { create as createIPFS, IPFS } from "ipfs-core";
 import OrbitDB from 'orbit-db';
+
 
 let _ipfsNode: IPFS;
 
@@ -18,6 +16,13 @@ const makeIpfs = async (offset: number = 1): Promise<IPFS> => {
     },
 
     config: {
+      API: {
+        HTTPHeaders: {
+          "Access-Control-Allow-Origin": [
+            '*'
+          ]
+        }
+      },
       Discovery: {
         MDNS: {
           Enabled: true,
@@ -66,4 +71,5 @@ const makeOdb = async (dbName: string): Promise<any> => {
 export {
   makeIpfs,
   makeOdb
-}
+};
+

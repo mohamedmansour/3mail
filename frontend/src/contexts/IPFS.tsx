@@ -1,19 +1,43 @@
 import {IPFS, create, multiaddr} from "ipfs-core";
+import { create as ipfsHttpCreate } from "ipfs-http-client";
+
 import React, { useContext, useEffect, useState } from "react";
 
 type IPFSContextType = {
-  ipfs?: IPFS
+  ipfs?: IPFS;
+  ipfsHttpNode?: IPFS;
 }
 const IPFSContext = React.createContext<IPFSContextType>({
-  ipfs: undefined
+  ipfs: undefined,
+  ipfsHttpNode: undefined,
 })
 
 const useIpfs = () => useContext(IPFSContext);
 
-const IPFSProvider = ({ children }: {
-  children: React.ReactNode
+const IPFSProvider = ({ children, remoteNodeUrl }: {
+  children: React.ReactNode,
+  remoteNodeUrl?: string | undefined
 }) => {
   const [ipfsNode, setIpfsNode] = useState<IPFS|undefined>();
+  const [ipfsHttpNode, setIpfsHttpNode] = useState<IPFS|undefined>();
+
+  useEffect(() => {
+    console.log(remoteNodeUrl);
+    if (!remoteNodeUrl) return;
+
+    const remoteNode = ipfsHttpCreate({
+      url: remoteNodeUrl
+    });
+    setIpfsHttpNode(remoteNode as unknown as IPFS);
+
+    (async() => {
+      const ipfsId = await remoteNode.id();
+      console.log('ipfs http node (v%s) connected [id: %s]', ipfsId.agentVersion, ipfsId.id);
+      if (process.env.REACT_APP_SENDING_PEER) {
+        await remoteNode.swarm.connect(process.env.REACT_APP_SENDING_PEER as string);
+      }
+    })();
+  }, [remoteNodeUrl])
 
   useEffect(() => {
     
@@ -47,7 +71,8 @@ const IPFSProvider = ({ children }: {
 
   return (
     <IPFSContext.Provider value={{
-      ipfs: ipfsNode
+      ipfs: ipfsNode,
+      ipfsHttpNode
     }}>
       {ipfsNode ? children : <div>starting ipfs</div>}
     </IPFSContext.Provider>

@@ -9,7 +9,7 @@ import OrbitDbTest from 'components/organisms/OrbitDbTest';
 function App() {
   return (
     <ChakraProvider theme={customTheme}>
-      <IPFSProvider>
+      <IPFSProvider remoteNodeUrl={process.env.REACT_APP_LOCAL_IPFS}>
         <OrbitDbProvider dbName="/orbitdb/zdpuB1eaxvCYJYsn551bkesWL2xnEeN1T3TqZqWqF2MWg31dp/cemail.mail.events.dev.1">
           <CSSReset />
           <Flex direction="column" height="100vh">

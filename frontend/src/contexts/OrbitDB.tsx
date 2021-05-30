@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import {useIpfs} from './IPFS';
 import OrbitDB from 'orbit-db';
+import React, { useContext, useEffect, useState } from "react";
+import { useIpfs } from './IPFS';
 
 type OrbitDbContextType = {
   odb?: any, //the orbitdb instance
@@ -13,22 +13,23 @@ const OrbitDbContext = React.createContext<OrbitDbContextType>({
 
 const useOrbitDb = () => useContext(OrbitDbContext);
 
-const OrbitDbProvider = ({ dbName, children }: {
+const OrbitDbProvider = ({ dbName,  children }: {
   dbName: string,
   children: React.ReactNode
 }) => {
-  const {ipfs} = useIpfs();
+  const {ipfs, ipfsHttpNode} = useIpfs();
   const [odb, setOdb] = useState<any|undefined>();
   const [db, setDb] = useState<any|undefined>();
 
   useEffect(() => {
-    if (!ipfs) return;
+    const nodeToUse = ipfsHttpNode ?? ipfs;
+    if (!nodeToUse) return;
     (async () => {
-      const orbitDb = await OrbitDB.createInstance(ipfs);
+      const orbitDb = await OrbitDB.createInstance(nodeToUse);
       console.log("ODB Identity", orbitDb.identity.toJSON());
       setOdb(orbitDb);
     })();
-  }, [ipfs]);
+  }, [ipfs, ipfsHttpNode]);
 
   useEffect(() => {
     if (!odb) return;
@@ -64,4 +65,4 @@ const OrbitDbProvider = ({ dbName, children }: {
   
 }
 
-export {useOrbitDb, OrbitDbProvider};
+export { useOrbitDb, OrbitDbProvider };

@@ -8,7 +8,7 @@ async function main() {
   setInterval(async () => {
     const all = db.iterator({limit: 10}).collect().map((e: any)  => e.payload.value);
     console.log(all)
-  },5000)
+  },20000)
 
 }
 

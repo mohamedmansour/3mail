@@ -86,6 +86,7 @@ async function run() {
   const did = new DID({ provider, resolver })
   await ceramic.setDID(did)
   await ceramic.did.authenticate()
+  console.log(did);
 
   // Publish the two schemas
   const [messageSchema, messageListSchema] = await Promise.all([
