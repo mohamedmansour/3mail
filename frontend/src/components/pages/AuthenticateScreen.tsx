@@ -5,6 +5,7 @@ import {
   Button,
   Text,
   Input,
+  Image,
   Heading,
   HStack,
   Flex,
@@ -16,6 +17,7 @@ import {
   CloseButton,
   AlertTitle,
   AlertDescription,
+  Divider,
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';
@@ -105,20 +107,22 @@ function AuthenticateScreen(props: AuthenticateProps) {
         {nav === 'default' && (
           <VStack align="center" w="940px" gridGap={10}>
             <VStack gridGap={4}>
-              <LogoIcon fontSize={200} color="#8E54A2" />
               <Text>
                 Welcome to the first ever Decentralized Email Service!
               </Text>
+              <LogoIcon fontSize={200} color="#8E54A2" />
             </VStack>
+            <Divider />
             <HStack margin={10}>
-              <VStack flex={1}>
+              <VStack flex={1} height="250px">
                 <Heading size="sm">Decentralized</Heading>
                 <Text>
-                  There is no central server relaying messages. Messages are sent Peer-to-Peer with data stored on IPFS.
+                  There is no central server relaying messages. Messages are
+                  sent Peer-to-Peer with data stored on IPFS.
                 </Text>
+                <Spacer />
                 <svg
-                  width="203"
-                  height="218"
+                  height="100"
                   viewBox="0 0 203 218"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -157,12 +161,16 @@ function AuthenticateScreen(props: AuthenticateProps) {
                   />
                 </svg>
               </VStack>
-              <VStack flex={1}>
+              <VStack flex={1} height="250px">
                 <Heading size="sm">Trustless</Heading>
-                <Text>Our identity system is built on Decentralized Identifiers (DID's) https://w3c.github.io/did-core/. You own your own idenity, not an Identity Provider.</Text>
+                <Text>
+                  Our identity system is built on Decentralized Identifiers
+                  (DID's) https://w3c.github.io/did-core/. You own your own
+                  idenity, not an Identity Provider.
+                </Text>
+                <Spacer />
                 <svg
-                  width="157"
-                  height="217"
+                  height="100"
                   viewBox="0 0 157 217"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -261,12 +269,16 @@ function AuthenticateScreen(props: AuthenticateProps) {
                   />
                 </svg>
               </VStack>
-              <VStack flex={1}>
-                <Heading size="sm">Easy to Use!/Heading>
-                <Text>You can send and receive emails using our web3 ui or with a lecgay email client with our local SMTP and IMAP proxy. Easily contact anyone using ENS identifiers.</Text>
+              <VStack flex={1} height="250px">
+                <Heading size="sm">Easy to Use!</Heading>
+                <Text>
+                  You can send and receive emails using our web3 ui or with a
+                  lecgay email client with our local SMTP and IMAP proxy. Easily
+                  contact anyone using ENS identifiers.
+                </Text>
+                <Spacer />
                 <svg
-                  width="194"
-                  height="216"
+                  height="100"
                   viewBox="0 0 194 216"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -306,6 +318,14 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 </svg>
               </VStack>
             </HStack>
+            <Divider />
+            <VStack>
+              <Text fontWeight="bold">Made possible by:</Text>
+              <Image
+                src="/technology.png"
+                alt="ceramic, orbitdb, ens, ipfs, ethereum"
+              />
+            </VStack>
           </VStack>
         )}
         {nav === 'login' && (
