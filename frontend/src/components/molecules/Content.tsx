@@ -15,7 +15,7 @@ const Content = () => {
         <Layout
           logout={app.logout}
           home={app.openMailbox}
-          compose={app.compose}
+          compose={app.openCompose}
           search={app.search}
           searchClosed={app.clearSearch}
           searchResults={app.state.searchResults}
@@ -29,7 +29,7 @@ const Content = () => {
         <Layout
           logout={app.logout}
           home={app.openMailbox}
-          compose={app.compose}
+          compose={app.openCompose}
           search={app.search}
           searchClosed={app.clearSearch}
           searchResults={app.state.searchResults}
@@ -43,7 +43,7 @@ const Content = () => {
         <Layout
           logout={app.logout}
           home={app.openMailbox}
-          compose={app.compose}
+          compose={app.openCompose}
           search={app.search}
           searchClosed={app.clearSearch}
           searchResults={app.state.searchResults}

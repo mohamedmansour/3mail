@@ -191,7 +191,7 @@ export function useApp() {
     dispatch({ type: 'auth logout' });
   }, []);
 
-  const compose = useCallback(() => {
+  const openCompose = useCallback(() => {
     dispatch({ type: 'nav compose' });
   }, []);
 
@@ -227,8 +227,8 @@ export function useApp() {
     authenticate,
     openMessage,
     openMailbox,
+    openCompose,
     logout,
-    compose,
     search,
     clearSearch,
     state,
