@@ -4,7 +4,7 @@ import Ceramic from '@ceramicnetwork/http-client'
 import { IDX } from '@ceramicstudio/idx'
 import { DID } from 'dids'
 
-import { web3Modal } from './providers'
+import { web3Modal } from './Providers'
 
 const CERAMIC_URL = process.env.REACT_APP_CERAMIC_URL as string
 
