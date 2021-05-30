@@ -5,7 +5,6 @@ import {
   Button,
   Text,
   Input,
-  Image,
   Heading,
   HStack,
   Flex,
@@ -17,7 +16,6 @@ import {
   CloseButton,
   AlertTitle,
   AlertDescription,
-  Divider,
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';

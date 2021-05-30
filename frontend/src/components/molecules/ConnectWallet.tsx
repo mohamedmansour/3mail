@@ -13,9 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Ethereumish } from 'ethereum';
 import React, { useState } from 'react';
-import { ethers } from 'ethers';
 import { CgLock } from 'react-icons/cg';
-import { ThreeIdConnect, EthereumAuthProvider } from '@3id/connect';
 import { useCeramic } from 'contexts/Ceramic';
 
 declare global {
@@ -28,7 +26,7 @@ export function ConnectWallet() {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [did, setDid] = useState<string>();
   const [networkError, setNetworkError] = useState<string>();
-  const { setSelectedAddress: updateSelectedAddress } = useCeramic();
+  const { setSelectedAddress: updateSelectedAddress, getDidId } = useCeramic();
 
   if (window.ethereum === undefined) {
     // No Wallet
@@ -108,6 +106,7 @@ export function ConnectWallet() {
   async function initialize(userAddress: string) {
     setSelectedAddress(userAddress);
     updateSelectedAddress(userAddress);
+    setDid(getDidId());
   }
 
   // Connected

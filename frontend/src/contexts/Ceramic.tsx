@@ -30,6 +30,7 @@ type CeramicContextType = {
   inbox?: TileDocument;
   setSeed: (s: Uint8Array) => void;
   setSelectedAddress: (s: string) => void;
+  getDidId: () => string;
 };
 const CeramicContext = React.createContext<CeramicContextType>({
   ceramic: undefined,
@@ -37,6 +38,7 @@ const CeramicContext = React.createContext<CeramicContextType>({
   inbox: undefined,
   setSeed: () => {},
   setSelectedAddress: () => {},
+  getDidId: () => '',
 });
 
 const useCeramic = () => useContext(CeramicContext);
@@ -62,6 +64,14 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
   const [did, setDID] = useState<DID>();
   const [seed, setSeed] = useState<Uint8Array>();
   const [selectedAddress, setSelectedAddress] = useState<string>();
+
+  function getDidId() {
+    if (!did) {
+      return '';
+    }
+
+    return did.id;
+  }
 
   useEffect(() => {
     if (!seed) return;
@@ -150,6 +160,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
         ceramic,
         idx,
         inbox,
+        getDidId,
         setSeed,
         setSelectedAddress,
       }}
