@@ -28,6 +28,7 @@ type CeramicContextType = {
   ceramic?: Ceramic;
   idx?: IDX;
   inbox?: TileDocument;
+  did?: DID,
   didId?: string;
   setSeed: (s: Uint8Array) => void;
   setSelectedAddress: (s: string) => void;
@@ -36,6 +37,7 @@ const CeramicContext = React.createContext<CeramicContextType>({
   ceramic: undefined,
   idx: undefined,
   inbox: undefined,
+  did: undefined,
   didId: undefined,
   setSeed: () => {},
   setSelectedAddress: () => {},
@@ -142,9 +144,9 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       setIDX(new IDX({ ceramic: _ceramic, aliases: definitions }));
 
       // Load the existing notes
-      const relayId = `relay-${did.id}`;
-      console.log('RelayID', relayId);
-      setDidId(relayId);
+      const didId = `${did.id}`;
+      console.log('Connected with 3id connect', didId);
+      setDidId(didId);
     })();
   }, [selectedAddress]);
 
@@ -168,6 +170,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         ceramic,
         idx,
+        did,
         inbox,
         didId,
         setSeed,

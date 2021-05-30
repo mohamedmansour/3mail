@@ -25,7 +25,7 @@ declare global {
 export function ConnectWallet() {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [networkError, setNetworkError] = useState<string>();
-  const { setSelectedAddress: updateSelectedAddress, didId } = useCeramic();
+  const { setSelectedAddress: updateSelectedAddress, did } = useCeramic();
 
   if (window.ethereum === undefined) {
     // No Wallet
@@ -117,7 +117,7 @@ export function ConnectWallet() {
         </Flex>
       </Heading>
       <Text>Address: {selectedAddress}</Text>
-      <Text>DID: {didId || 'loading...'}</Text>
+      <Text>DID: {did ? did.id : 'loading...'}</Text>
     </VStack>
   );
 }

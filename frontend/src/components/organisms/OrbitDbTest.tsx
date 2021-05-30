@@ -22,11 +22,14 @@ const OrbitDbTest = ({addMessage}:
     //todo: set to app states' did     
     if (!ceramic)
       return;
-    setDbName('did:key:z6MkvpyzVtYLETJFaYXs3My4vtXMdZs7SjmmQQEpL9nH7MmY')
+
+      console.log("ceramic did", ceramic.did!.id)
+      //did:key:z6MkvpyzVtYLETJFaYXs3My4vtXMdZs7SjmmQQEpL9nH7MmY
+    setDbName(ceramic.did!.id)
     //@ts-ignore
   }, [ceramic]);
 
-  const convertMessages = async (ceramic: CeramicClient, latest:string) => {
+  const convertMessage = async (ceramic: CeramicClient, latest:string) => {
     console.debug("fetching", latest , ceramic);
     const doc = await TileDocument.load(ceramic, latest  );
     const content: {
@@ -61,8 +64,7 @@ const OrbitDbTest = ({addMessage}:
         .map((e: any) => { return e.payload.value.doc});
       
       const latest = all[0];
-
-      convertMessages(ceramic, latest);
+      convertMessage(ceramic, latest);
     });
     //@ts-ignore
   }, [db, ceramic]);
