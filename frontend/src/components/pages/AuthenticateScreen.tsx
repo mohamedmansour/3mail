@@ -90,25 +90,24 @@ function AuthenticateScreen(props: AuthenticateProps) {
         </Button>
         <Button
           disabled={isLoading}
-          colorScheme="purple"
+          colorScheme="gray"
           onClick={handleCreateAccount}
         >
           Create Account
         </Button>
       </Flex>
-      <Box padding={4}>
+      <Flex
+        padding={4}
+        align="center"
+        textAlign="center"
+        justifyContent="center"
+      >
         {nav === 'default' && (
-          <Box textAlign="center">
+          <VStack align="center" w="940px" gridGap={10}>
             <VStack gridGap={4}>
+              <LogoIcon fontSize={200} color="#8E54A2" />
               <Text>
                 Welcome to the first ever Decentralized Email Service!
-              </Text>
-              <Text>
-                <strong>cemail</strong> uses IPFS for decentralization. Users
-                are identified with "DID", a decentralized identifier that are
-                owned by the user. At its' core, cemail uses Ceramic protocol
-                which uses DIDs to represent identities that are interacting
-                with documents.
               </Text>
             </VStack>
             <HStack margin={10}>
@@ -307,7 +306,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 </svg>
               </VStack>
             </HStack>
-          </Box>
+          </VStack>
         )}
         {nav === 'login' && (
           <VStack align="flex-start" gridGap={4}>
@@ -346,7 +345,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               value={seed}
             />
             <HStack>
-              <Button colorScheme="blue" onClick={handleLogin}>
+              <Button colorScheme="purple" onClick={handleLogin}>
                 Enter
               </Button>
             </HStack>
@@ -365,7 +364,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               <Code padding={4}>{seed}</Code>
             </Box>
             <HStack>
-              <Button colorScheme="blue" onClick={handleLogin}>
+              <Button colorScheme="purple" onClick={handleLogin}>
                 Create
               </Button>
               <Button variant="contained" onClick={handleCopySeed}>
@@ -374,7 +373,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
             </HStack>
           </VStack>
         )}
-      </Box>
+      </Flex>
     </Box>
   );
 }
