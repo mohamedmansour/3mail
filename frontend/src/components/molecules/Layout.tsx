@@ -8,7 +8,6 @@ import {
   Input,
   Text,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react';
 import { LogoIcon } from 'components/branding/Logo';
 import React, { useEffect } from 'react';
@@ -106,18 +105,26 @@ export function Layout(props: LayoutProps) {
             {!!searchResults.length && (
               <Box>
                 <Divider />
-                <VStack alignItems="flex-start">
+                <Box alignItems="flex-start">
                   {searchResults.map((result, idx) => (
                     <Box
                       key={idx}
                       onClick={() => handleSearchItemVisited(result.id)}
-                      w="100%"
                       isTruncated
+                      bg="gray.100"
+                      rounded="lg"
+                      padding={2}
+                      marginBottom={2}
+                      _hover={{
+                        backgroundColor: '#8E54A2',
+                        color: 'white',
+                        cursor: 'pointer',
+                      }}
                     >
                       {result.subject}
                     </Box>
                   ))}
-                </VStack>
+                </Box>
               </Box>
             )}
           </ModalBody>
