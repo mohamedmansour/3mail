@@ -81,7 +81,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
       >
         <HStack cursor="pointer" onClick={() => setNav('default')}>
           <LogoIcon fontSize={24} color="#8E54A2" />
-          <Text fontSize={20}>cemail</Text>
+          <Text fontSize={20}>3mail</Text>
         </HStack>
         <Spacer />
         <Button

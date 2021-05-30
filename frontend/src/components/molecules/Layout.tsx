@@ -54,7 +54,7 @@ export function Layout(props: LayoutProps) {
         >
           <HStack onClick={props.home} cursor="pointer" align="center">
             <LogoIcon fontSize={24} />
-            <Text>cemail</Text>
+            <Text>3mail</Text>
           </HStack>
           <HStack
             w="50%"
