@@ -15,7 +15,7 @@ export function Layout(props: LayoutProps) {
         align="center"
         justify="space-between"
         padding="0.5rem"
-        bg="purple"
+        bg="#8E54A2"
         color="white"
       >
         <Flex onClick={props.home} cursor="pointer">

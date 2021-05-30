@@ -108,7 +108,7 @@ function MessageScreen(props: MessageScreenProps) {
               size="lg"
             />
             <Flex>
-              <Button colorScheme="blue" onClick={() => submitReply()}>
+              <Button colorScheme="purple" onClick={() => submitReply()}>
                 Send
               </Button>
               <Spacer />
