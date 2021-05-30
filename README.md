@@ -16,10 +16,11 @@ Ceramic combines [IPFS](https://ipfs.io/), [Ethereum](https://ethereum.org), [p2
 ## Frontend project build
 
 - Enter `cd frontend`
-- Install dependencies: `yarn install`
-- Run Ceramic: `yarn ceramic`
+- Install dependencies: `npm install`
+- Run frontend `npm run start`
 
 ## Bootstrap project build
 
-- Generate your seed `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-- Run bootstrap: `$env:SEED=[seed_from_above] yarn bootstrap`
+- Generate your seed `yarn seed`
+- Add ceramic endpoint `CERAMIC_URL=https://ceramic-clay.3boxlabs.com/` to your `.env.local`
+- Deloy schema definations: `yarn bootstrap`
