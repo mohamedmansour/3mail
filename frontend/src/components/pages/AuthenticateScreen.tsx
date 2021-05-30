@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';
+import { generatePrivateKey } from 'contexts/MetamaskConnect';
 import { CgLock } from 'react-icons/cg';
 import { LogoIcon } from 'components/branding/Logo';
 import Welcome from 'components/branding/Welcome';
@@ -60,13 +61,14 @@ function AuthenticateScreen(props: AuthenticateProps) {
   };
 
   const handleLogin = () => {
-    if (seed) {
-      try {
-        authenticate(fromString(seed, 'base16'));
-      } catch (e) {
-        setError('Seed should be base16-encoded string of 32 bytes length.');
-      }
-    }
+    generatePrivateKey();
+    // if (seed) {
+    // try {
+    //   authenticate(fromString(seed, 'base16'));
+    // } catch (e) {
+    //   setError('Seed should be base16-encoded string of 32 bytes length.');
+    // }
+    // }
   };
 
   return (
@@ -105,9 +107,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
         textAlign="center"
         justifyContent="center"
       >
-        {nav === 'default' && (
-          <Welcome />
-        )}
+        {nav === 'default' && <Welcome />}
         {nav === 'login' && (
           <VStack align="flex-start" gridGap={4}>
             <Heading size="md">
