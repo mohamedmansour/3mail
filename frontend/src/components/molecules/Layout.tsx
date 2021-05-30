@@ -1,28 +1,46 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Heading,
   HStack,
   Input,
   Text,
   useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
 import { LogoIcon } from 'components/branding/Logo';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CgSearch } from 'react-icons/cg';
 import { Modal, ModalOverlay, ModalContent, ModalBody } from '@chakra-ui/react';
+import { StoredMessage } from 'contexts/State';
 
 interface LayoutProps {
   children: React.ReactNode;
   logout: () => void;
   home: () => void;
   compose: () => void;
-  search?: () => void;
+  search: (query: string) => void;
+  searchClosed: () => void;
+  openMessage: (id: string) => void;
+  searchResults: StoredMessage[];
 }
 
 export function Layout(props: LayoutProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { searchClosed, searchResults } = props;
+
+  useEffect(() => {
+    if (!isOpen) {
+      searchClosed();
+    }
+  }, [searchClosed, isOpen]);
+
+  const handleSearchItemVisited = (id: string) => {
+    onClose();
+    props.openMessage(id);
+  };
 
   return (
     <>
@@ -74,7 +92,7 @@ export function Layout(props: LayoutProps) {
         <ModalOverlay />
         <ModalContent>
           <ModalBody>
-            <HStack padding={1}>
+            <HStack>
               <CgSearch fontSize={24} color="#8E54A2" />
               <Input
                 type="text"
@@ -82,8 +100,26 @@ export function Layout(props: LayoutProps) {
                 outlineColor="transparent"
                 focusBorderColor="transparent"
                 placeholder="Search mail"
+                onChange={(e) => props.search(e.target.value)}
               />
             </HStack>
+            {!!searchResults.length && (
+              <Box>
+                <Divider />
+                <VStack alignItems="flex-start">
+                  {searchResults.map((result, idx) => (
+                    <Box
+                      key={idx}
+                      onClick={() => handleSearchItemVisited(result.id)}
+                      w="100%"
+                      isTruncated
+                    >
+                      {result.subject}
+                    </Box>
+                  ))}
+                </VStack>
+              </Box>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -30,7 +30,7 @@ export type StoredMessage = {
 };
 
 type Store = {
-  draftStatus: DraftStatus;
+  searchResults: StoredMessage[];
   messages: StoredMessage[];
 };
 type DefaultState = {
@@ -50,6 +50,9 @@ type NavMailboxAction = { type: 'nav mailbox'; messages: StoredMessage[] };
 type NavMessageAction = { type: 'nav message'; docID: string };
 type NavComposeAction = { type: 'nav compose' };
 type MessageLoadedAction = { type: 'message loaded'; message: StoredMessage };
+type SearchLoadingAction = { type: 'search loading' };
+type SearchLoadedAction = { type: 'search loaded'; results: StoredMessage[] };
+type SearchClearedAction = { type: 'search cleared' };
 type Action =
   | AuthAction
   | AuthLogoutAction
@@ -57,7 +60,10 @@ type Action =
   | NavComposeAction
   | NavMailboxAction
   | NavMessageAction
-  | MessageLoadedAction;
+  | MessageLoadedAction
+  | SearchLoadingAction
+  | SearchLoadedAction
+  | SearchClearedAction;
 
 const currentDateInMs = Date.now();
 const tempDb: StoredMessage[] = [];
@@ -83,8 +89,8 @@ function reducer(state: State, action: Action): State {
       };
     case 'auth logout': {
       return {
+        searchResults: [],
         auth: { status: 'pending' },
-        draftStatus: 'unsaved',
         nav: { type: 'default' },
         messages: [],
       };
@@ -95,8 +101,8 @@ function reducer(state: State, action: Action): State {
         status: 'done',
       } as AuthenticatedState;
       return {
+        searchResults: [],
         auth,
-        draftStatus: 'unsaved',
         nav: { type: 'mailbox' },
         messages: action.messages,
       };
@@ -127,6 +133,24 @@ function reducer(state: State, action: Action): State {
           message: action.message,
         },
       };
+    case 'search loading':
+      return {
+        ...state,
+        auth: state.auth as AuthenticatedState,
+      };
+    case 'search loaded':
+      return {
+        ...state,
+        auth: state.auth as AuthenticatedState,
+        searchResults: action.results,
+      };
+    case 'search cleared': {
+      return {
+        ...state,
+        auth: state.auth as AuthenticatedState,
+        searchResults: [],
+      };
+    }
   }
 
   return state;
@@ -135,7 +159,7 @@ function reducer(state: State, action: Action): State {
 export function useApp() {
   const [state, dispatch] = useReducer(reducer, {
     auth: { status: 'pending' },
-    draftStatus: 'unsaved',
+    searchResults: [],
     nav: { type: 'default' },
     messages: [],
   });
@@ -171,12 +195,42 @@ export function useApp() {
     dispatch({ type: 'nav compose' });
   }, []);
 
+  const search = useCallback((query: string) => {
+    if (query.length < 3) return;
+    dispatch({ type: 'search loading' });
+    const results: StoredMessage[] = [];
+    query = query.toLowerCase();
+    for (let itemIndex in tempDb) {
+      const item = tempDb[itemIndex];
+
+      if (results.length === 10) {
+        break;
+      }
+
+      if (item.content.toLowerCase().indexOf(query) !== -1) {
+        results.push(item);
+      } else if (item.subject.toLowerCase().indexOf(query) !== -1) {
+        results.push(item);
+      } else if (item.sender.toLowerCase().indexOf(query) !== -1) {
+        results.push(item);
+      }
+    }
+
+    dispatch({ type: 'search loaded', results });
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    dispatch({ type: 'search cleared' });
+  }, []);
+
   return {
     authenticate,
     openMessage,
     openMailbox,
     logout,
     compose,
+    search,
+    clearSearch,
     state,
   };
 }
