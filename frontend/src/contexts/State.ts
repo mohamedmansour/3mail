@@ -164,6 +164,7 @@ function reducer(state: State, action: Action): State {
     case 'message added': {
       return {
         ...state,
+        auth: state.auth as AuthenticatedState,
         messages: [action.message, ...state.messages],
       };
     }
@@ -228,8 +229,11 @@ export function useApp() {
       for await (const msg of all) {
         convertMessage(msg);
       }
-      
+
+      //todo: this is not working as expected:
+      console.log("listening");
       db.events.on('replicated', (address: string) => {
+        console.log("replicated");
         const all = db
           .iterator({ reverse: true, limit: 3 })
           .collect()

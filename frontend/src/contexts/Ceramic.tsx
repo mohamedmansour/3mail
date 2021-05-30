@@ -84,6 +84,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
     await _ceramic.setDID(did);
     setCeramic(_ceramic);
     setDID(did);
+    console.log(did.id);
   }
 
   const loginWithSeed = async(seed: string) => {
@@ -108,7 +109,7 @@ const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
     if (!ceramic) return;
     setIDX(new IDX({ ceramic, aliases: definitions }));
 
-    console.log('idx is loaded');
+    console.debug('idx is loaded');
     // (async () => {
     //   const document = await TileDocument.create(ceramic, {});
     //   console.log(document.id)

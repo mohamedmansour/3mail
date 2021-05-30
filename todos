@@ -1,0 +1,48 @@
+Latest
+
+[x] recv creates identity on frontend
+[] recv creates new inbox document
+[x] recv registers (did) or (recv inbox doc id) on ENS
+  [] integrate that into the app.
+[x] recv spins up IPFS node on his machine, connects browser client to it (for pubsub)
+[x] recv starts odb in browser, topic {recv.did}
+
+[x] create / load identity on smtp service for sender
+[x] sender spins up IPFS node on his machine (for pubsub)
+[x] send mime message from mail client {subj, to, msg}
+[x] smtp service creates a ceramic doc out of that, controlled by sender
+[x] stmp service adds an ODB log entry with {recv.inbox | msg doc id} to topic {recv.did | recv.inboxdocid}
+
+[-] recv hears the update on his ODB, reads the last log entry
+  needs to be fixed
+
+[x] recv reads message doc
+[] recv add message doc to his inbox doc
+
+[] check if the owner / controller of a doc can add other controllers (to define who may write messages on his "inbox" document)
+[] add an user's inbox doc id (ceramic) / public key (textile) to ENS (could be left up to the user)
+[] add an user's inbox doc id (ceramic) to IDX
+[x] resolve an user's inbox doc id (ceramic) / public key (textile) on ENS
+
+[x] write an smtp server (see https://github.com/mohamedmansour/w3c-cemail/pull/2) that receives mime messages by an email client and runs **locally** on the user's machine (therefore be considered a secure environment)
+
+[] authenticate the smtp server
+  upon setup user must authenticate inside the smtp server. That involves:
+    (ceramic) adding private keys (the seed, actually) to be able to sign messages on behalf of the user 
+
+[] (either) build an POP/IMAP service that also runs on the user's machine (along the SMTP service) and reads messages from his (ceramic) document / (textile) inbox (see https://github.com/mohamedmansour/w3c-cemail/pull/1/files#diff-d00c8cf58e8e1c820939ce5c0663a57eafa9ccf4810f9ec75eeeda5d7cd46b07R100 TextileApp.tsx, Line 100)
+
+[] (or) build a frontend that replaces / supports the "inbox" view and reads the (ceramic) inbox document / in a web browser (needs to identify with the same private key / metamask signer that has been used for the SMTP service)
+
+
+frontend seed, break it, if you want so:
+beca772acc5ce38c944b8b8777a1935bd68e71ac5cbe7bb777f66dcfbc14d494
+
+Ideas
+
+[] add ENS alias entries for email address names (stefan@elmariachi.eth)
+  : did.stefan -> did of stefan 
+  : did.info   -> did of info@elmariachi.eth 
+  or handle this information by yet another ceramic document!
+  
+
