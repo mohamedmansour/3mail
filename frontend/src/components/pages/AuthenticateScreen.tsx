@@ -11,6 +11,13 @@ import {
   Spacer,
   Code,
   VStack,
+  Badge,
+  Stack,
+  Alert,
+  AlertIcon,
+  CloseButton,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';
@@ -24,14 +31,9 @@ type AuthenticateProps = {
 function AuthenticateScreen(props: AuthenticateProps) {
   const [nav, setNav] = useState<'default' | 'login' | 'create'>('default');
   const [seed, setSeed] = useState<string>();
+  const [error, setError] = useState<string>();
   const { authenticate, state } = props;
   const isLoading = state.status === 'loading';
-
-  // useEffect(() => {
-  //   if (seed) {
-  //     authenticate(fromString(seed, 'base16'));
-  //   }
-  // }, [authenticate, seed]);
 
   if (state.status === 'done') {
     return (
@@ -57,7 +59,11 @@ function AuthenticateScreen(props: AuthenticateProps) {
 
   const handleLogin = () => {
     if (seed) {
-      authenticate(fromString(seed, 'base16'));
+      try {
+        authenticate(fromString(seed, 'base16'));
+      } catch (e) {
+        setError('Seed should be base16-encoded string of 32 bytes length.');
+      }
     }
   };
 
@@ -102,12 +108,27 @@ function AuthenticateScreen(props: AuthenticateProps) {
                 Account Login
               </Flex>
             </Heading>
+            {error && (
+              <Alert status="error" marginBottom={4}>
+                <AlertIcon />
+                <AlertTitle mr={2}>Invalid Seed!</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+                <CloseButton
+                  position="absolute"
+                  right="8px"
+                  top="8px"
+                  onClick={() => setError(undefined)}
+                />
+              </Alert>
+            )}
             <Text>
               You need to your private seed to get access to your mailbox!
             </Text>
             <Input
               autoFocus
               disabled={isLoading}
+              isInvalid={!!error}
+              errorBorderColor="crimson"
               id="seed"
               label="Seed"
               onChange={handleSeedChange}
