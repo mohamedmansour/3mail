@@ -1,40 +1,42 @@
-import ThreeIdResolver from "@ceramicnetwork/3id-did-resolver";
-import Ceramic from "@ceramicnetwork/http-client";
+import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver';
+import Ceramic from '@ceramicnetwork/http-client';
 import { TileDocument } from '@ceramicnetwork/stream-tile';
-import { IDX } from "@ceramicstudio/idx";
-import type { ResolverRegistry } from "did-resolver";
-import { DID } from "dids";
-import { Ed25519Provider } from "key-did-provider-ed25519";
-import KeyDidResolver from "key-did-resolver";
+import { IDX } from '@ceramicstudio/idx';
+import type { ResolverRegistry } from 'did-resolver';
+import { DID } from 'dids';
+import { Ed25519Provider } from 'key-did-provider-ed25519';
+import KeyDidResolver from 'key-did-resolver';
 import React, { useContext, useEffect, useState } from 'react';
-import { definitions } from "../config.json";
+import { definitions } from '../config.json';
 
+import { ThreeIdConnect, EthereumAuthProvider } from '@3id/connect';
 
 export type MessageItem = {
-  id: string,
-  subject: string,
-  content: string
-}
+  id: string;
+  subject: string;
+  content: string;
+};
 
-export type MessageList = { messages: Array<MessageItem> }
+export type MessageList = { messages: Array<MessageItem> };
 
 export type IDXInit = MessageList & {
-  ceramic: Ceramic
-  idx: IDX,
-  
-}
+  ceramic: Ceramic;
+  idx: IDX;
+};
 
 type CeramicContextType = {
   ceramic?: Ceramic;
   idx?: IDX;
-  inbox?: TileDocument,
-  setSeed: (s: Uint8Array) => void
+  inbox?: TileDocument;
+  setSeed: (s: Uint8Array) => void;
+  setSelectedAddress: (s: string) => void;
 };
 const CeramicContext = React.createContext<CeramicContextType>({
   ceramic: undefined,
   idx: undefined,
   inbox: undefined,
-  setSeed: () => {}
+  setSeed: () => {},
+  setSelectedAddress: () => {},
 });
 
 const useCeramic = () => useContext(CeramicContext);
@@ -53,52 +55,84 @@ const useCeramic = () => useContext(CeramicContext);
   // })
   */
 
-const CeramicProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  
+const CeramicProvider = ({ children }: { children: React.ReactNode }) => {
   const [ceramic, setCeramic] = useState<Ceramic>();
   const [idx, setIDX] = useState<IDX>();
   const [inbox, setInbox] = useState<TileDocument>();
   const [did, setDID] = useState<DID>();
   const [seed, setSeed] = useState<Uint8Array>();
+  const [selectedAddress, setSelectedAddress] = useState<string>();
 
   useEffect(() => {
     if (!seed) return;
 
-    (async() => {
+    (async () => {
       // Create the Ceramic instance and inject provider
-      const _ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string)
-      
+      const _ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string);
+
       const resolverRegistry: ResolverRegistry = {
         ...KeyDidResolver.getResolver(),
         ...ThreeIdResolver.getResolver(_ceramic),
-      }
+      };
       const did = new DID({
         provider: new Ed25519Provider(seed),
         resolver: resolverRegistry,
-      })
-      
-      await did.authenticate()
-      await _ceramic.setDID(did)
+      });
+
+      await did.authenticate();
+      await _ceramic.setDID(did);
       setCeramic(_ceramic);
       setDID(did);
-      
+
       // Create the IDX instance with the definitions aliases from the config
-      setIDX( new IDX({ ceramic: _ceramic, aliases: definitions }))
+      setIDX(new IDX({ ceramic: _ceramic, aliases: definitions }));
 
       // Load the existing notes
-      const relayId = `relay-${did.id}`
-      console.log('RelayID', relayId)
+      const relayId = `relay-${did.id}`;
+      console.log('RelayID', relayId);
     })();
   }, [seed]);
 
   useEffect(() => {
+    if (!selectedAddress) return;
+
+    (async () => {
+      // Create the Ceramic instance and inject provider
+      const _ceramic = new Ceramic(process.env.REACT_APP_CERAMIC_URL as string);
+
+      const threeIdConnect = new ThreeIdConnect();
+      const authProvider = new EthereumAuthProvider(
+        window.ethereum,
+        selectedAddress
+      );
+      await threeIdConnect.connect(authProvider);
+
+      const provider = threeIdConnect.getDidProvider();
+      const did = _ceramic.did;
+      if (!did) {
+        return;
+      }
+
+      did.setProvider(provider);
+
+      await did.authenticate();
+      await _ceramic.setDID(did);
+      setCeramic(_ceramic);
+      setDID(did);
+
+      // Create the IDX instance with the definitions aliases from the config
+      setIDX(new IDX({ ceramic: _ceramic, aliases: definitions }));
+
+      // Load the existing notes
+      const relayId = `relay-${did.id}`;
+      console.log('RelayID', relayId);
+    })();
+  }, [selectedAddress]);
+
+  useEffect(() => {
     if (!idx) return;
 
-    console.log("idx is loaded");
+    console.log('idx is loaded');
     // (async () => {
     //   const document = await TileDocument.create(ceramic, {});
     //   console.log(document.id)
@@ -108,7 +142,6 @@ const CeramicProvider = ({
     //     console.log(`Event from "${container}" with "${value}"`)
     //   })
     // })();
-
   }, [idx]);
 
   return (
@@ -118,6 +151,7 @@ const CeramicProvider = ({
         idx,
         inbox,
         setSeed,
+        setSelectedAddress,
       }}
     >
       {children}
