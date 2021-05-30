@@ -263,7 +263,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
               </VStack>
               <VStack flex={1}>
                 <Heading size="sm">Easy to Use!/Heading>
-                <Text>You can send and receive emails using our web3 ui or with a lecgay email client with our local SMTP and IMAP proxy.</Text>
+                <Text>You can send and receive emails using our web3 ui or with a lecgay email client with our local SMTP and IMAP proxy. Easily contact anyone using ENS identifiers.</Text>
                 <svg
                   width="194"
                   height="216"
