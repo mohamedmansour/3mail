@@ -1,6 +1,15 @@
-# Introduction to CeMail 
+# Introduction to 3Mail 
 
 An SMTP-compatible "mail" client that uses Ceramic documents to sync & relay email-like messages between identities. Roughly related to did-comm.
+
+![image](https://user-images.githubusercontent.com/1344649/120116936-fe3d2600-c18a-11eb-9ea1-0237b7bbdf30.png)
+
+![image](https://user-images.githubusercontent.com/1344649/120116947-101ec900-c18b-11eb-90a7-2c7059bc8269.png)
+
+![image](https://user-images.githubusercontent.com/1344649/120117004-52480a80-c18b-11eb-9625-51e26104647f.png)
+
+![image](https://user-images.githubusercontent.com/1344649/120117024-6855cb00-c18b-11eb-9815-4994477906ea.png)
+
 
 ## Some Fundamentals
 
