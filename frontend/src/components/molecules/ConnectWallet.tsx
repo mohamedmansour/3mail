@@ -16,6 +16,7 @@ import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { CgLock } from 'react-icons/cg';
 import { ThreeIdConnect, EthereumAuthProvider } from '@3id/connect';
+import { useCeramic } from 'contexts/Ceramic';
 
 declare global {
   interface Window {
@@ -27,6 +28,7 @@ export function ConnectWallet() {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [did, setDid] = useState<string>();
   const [networkError, setNetworkError] = useState<string>();
+  const { setSelectedAddress: updateSelectedAddress } = useCeramic();
 
   if (window.ethereum === undefined) {
     // No Wallet
@@ -105,12 +107,7 @@ export function ConnectWallet() {
 
   async function initialize(userAddress: string) {
     setSelectedAddress(userAddress);
-    const threeIdConnect = new ThreeIdConnect();
-    const authProvider = new EthereumAuthProvider(window.ethereum, userAddress);
-    await threeIdConnect.connect(authProvider);
-
-    const provider = await threeIdConnect.getDidProvider();
-    setDid(provider.accountId);
+    updateSelectedAddress(userAddress);
   }
 
   // Connected
