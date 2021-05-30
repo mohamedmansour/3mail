@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { fromString, toString } from 'uint8arrays';
 import {
   Box,
@@ -11,8 +11,6 @@ import {
   Spacer,
   Code,
   VStack,
-  Badge,
-  Stack,
   Alert,
   AlertIcon,
   CloseButton,
@@ -21,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { randomBytes } from '@stablelib/random';
 import { AuthState } from 'contexts/State';
-import { CgCopy, CgLock, CgMail } from 'react-icons/cg';
+import { CgLock, CgMail } from 'react-icons/cg';
 
 type AuthenticateProps = {
   authenticate: (seed: Uint8Array) => void;
@@ -97,7 +95,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
         </Button>
       </Flex>
       <Box padding={4}>
-        {nav == 'default' && (
+        {nav === 'default' && (
           <Box textAlign="center">
             <VStack gridGap={4}>
               <Text>
@@ -309,7 +307,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
             </HStack>
           </Box>
         )}
-        {nav == 'login' && (
+        {nav === 'login' && (
           <VStack align="flex-start" gridGap={4}>
             <Heading size="md">
               <Flex align="center">
@@ -352,7 +350,7 @@ function AuthenticateScreen(props: AuthenticateProps) {
             </HStack>
           </VStack>
         )}
-        {nav == 'create' && (
+        {nav === 'create' && (
           <VStack align="flex-start" gridGap={4}>
             <Heading size="md">
               <Flex align="center">
