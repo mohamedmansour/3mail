@@ -1,4 +1,4 @@
-# w3c cemail - Decentralized Email
+3mail - Decentralized Email
 
 Uses [Ceramic](https://ceramic.network/), which is a decentralized, censorship-resistant network for managing mutable information without any databases or servers!
 
